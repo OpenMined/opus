@@ -4,8 +4,8 @@
 - `/server` - Flask private identity server
 
 ## Legend
-* May not be necessary for MVP [color=#a01111]
-* Needs more thought/conversation [color=#0011a1]
+* May not be necessary for MVP ![#f03c15](https://placehold.it/15/f03c15/000000?text=+)
+* Needs more thought/conversation ![#1589F0](https://placehold.it/15/1589F0/000000?text=+)
 ## Requirements
 * Landing page explaining the project
 * Single Sign On integration with Multiple Providers
@@ -32,15 +32,15 @@
             * Some sophisticated change-management will be needed here, as this will be subject to change often. Especially given that we want to allow for this to be hosted in a decentralized fashion.
         * API Documentation
         * In addition to the data fields provided, we should provide information as to the strength of the individual's identity within our system.
-            * For example, we could say "this individual's identity has been verified through Facebook, Twitter, Github, Google, and LinkedIn" [color=#0011a1]
+            * For example, we could say "this individual's identity has been verified through Facebook, Twitter, Github, Google, and LinkedIn" ![#1589F0](https://placehold.it/15/1589F0/000000?text=+)
         * When returning data via this API, we should indicate which source(s) said data originated from with each field.
             * For example, if we return "birthdate", we should include "as verified by Facebook and LinkedIn"
-            * In case of conflicting information, we should return multiple results with the source of each [color=#0011a1]
+            * In case of conflicting information, we should return multiple results with the source of each ![#1589F0](https://placehold.it/15/1589F0/000000?text=+)
 
 * Easily deployable server to distribute the trust accross more than one hosting platform
     * Assume each deployment will be utilizing its own database for storing user SSO-related data and credentials
     * Dockerize the application(s) for ease of deploy with thorough deployment instructions
-    * Terraform (or other Infrastructure as Code) configuration for multiple cloud providers could make it easier [color=#a01111]
+    * Terraform (or other Infrastructure as Code) configuration for multiple cloud providers could make it easier ![#f03c15](https://placehold.it/15/f03c15/000000?text=+)
 
 
 ## Open Questions
