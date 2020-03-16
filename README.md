@@ -52,7 +52,7 @@
 * How should we implement single-sign on?
     * https://authlib.org/ seems like a good option, especially since it covers our needs for an OAuth Client as well
 * Will we meet the terms of use for Facebook, Twitter, etc. in order to extract information?
-    * We should run this proposal by legal counsel in order to verify our approach
+    * We should run this proposal by legal counsel in order to verify our approach. For now, we'll proceed assuming we'll get approval in the long-run.
 
 ## Needs
 * Security Audit / Review
