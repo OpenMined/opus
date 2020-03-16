@@ -57,5 +57,5 @@
 ## Needs
 * Security Audit / Review
 * Accessibility Audit / Review
-* Python folks who can implement Single Sign On
+* Python-experienced folks who can implement Single Sign On
 * Folks experienced in designing, developing, and documenting public APIs
