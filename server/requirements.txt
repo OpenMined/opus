@@ -1,0 +1,4 @@
+Flask
+flask_sqlalchemy
+flask_cors
+flask_testing
