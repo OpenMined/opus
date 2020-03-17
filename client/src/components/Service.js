@@ -38,7 +38,7 @@ export default ({
       }}
       variantColor={isConnected ? 'red' : 'blue'}
     >
-      {isConnected ? `Disconnect to ${name}` : `Connect from ${name}`}
+      {isConnected ? `Disconnect from ${name}` : `Connect to ${name}`}
     </Button>
   </Flex>
 );
