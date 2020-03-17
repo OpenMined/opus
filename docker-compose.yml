@@ -4,6 +4,7 @@ services:
     image: openmined/pis:latest
     build: ./server/
     volumes: ['./server:/server']
+    restart: always
     environment:
       PORT: 5000
       FLASK_DEBUG: 1
