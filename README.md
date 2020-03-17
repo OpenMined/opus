@@ -11,3 +11,7 @@ Make sure you have `docker` installed on your system.
 2. run `docker-compose up`
 
 This will start both the client/server application, and both will reload automatically as you make changes.
+
+## Further Documentation
+
+See the Readmes within the `client/` and `server/` directories for more information.
