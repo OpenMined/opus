@@ -1,4 +1,6 @@
 Flask
+psycopg2
 flask_sqlalchemy
+Flask-Migrate
 flask_cors
 flask_testing
