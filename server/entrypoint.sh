@@ -1,1 +1,1 @@
-exec python app.py
+echo "wahtever"
