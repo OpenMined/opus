@@ -5,23 +5,16 @@ import {
   ModalContent,
   ModalHeader,
   ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  Button
+  ModalBody
 } from '@chakra-ui/core';
 
-export default ({ isOpen, onClose, title, onSubmit, children }) => (
+export default ({ isOpen, onClose, title, children }) => (
   <Modal isOpen={isOpen} onClose={onClose}>
     <ModalOverlay />
     <ModalContent>
       <ModalHeader>{title}</ModalHeader>
       <ModalCloseButton />
-      <ModalBody>{children}</ModalBody>
-      <ModalFooter>
-        <Button variant="blue" onClick={onSubmit}>
-          Submit
-        </Button>
-      </ModalFooter>
+      <ModalBody mb={3}>{children}</ModalBody>
     </ModalContent>
   </Modal>
 );
