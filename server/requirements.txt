@@ -4,3 +4,6 @@ flask_sqlalchemy
 Flask-Migrate
 flask_cors
 flask_testing
+oauthlib
+pyOpenSSL
+Flask-Login

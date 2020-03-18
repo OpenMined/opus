@@ -8,5 +8,4 @@ def create_app():
   from . import routes, services, models
   routes.init_app(app)
   models.init_app(app)
-
   return app
