@@ -57,13 +57,13 @@ export default () => {
     console.log('Do login', values);
 
     // TODO: Make fetch() request here to login
-    fetch('http://locahost:5000/login', {
-      method: 'post',
+    fetch('http://localhost:5000/login', {
+      method: 'POST',
+      mode: 'cors',
       headers: {
-        'Content-type': 'application/json; charset=UTF-8'
+        'Content-type': 'application/json'
       },
-      body: values,
-      mode: 'cors'
+      body: JSON.stringify(values)
     })
     .then(function (data) {
       console.log('Request succeeded with JSON response', data);
