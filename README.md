@@ -60,6 +60,7 @@ This approach has a number of flaws that we can seek to mitigate. However, there
             * In case of conflicting information, we should return multiple results with the source of each ![#1589F0](https://placehold.it/15/1589F0/000000?text=+)
 
 * Easily deployable server to distribute the trust accross more than one hosting platform
+    * The separate hosts will not communicate in any way. Therefore, if a user has linked many accounts to host A, then they would have to repeat that process on host B in order to utilize SSO with host B.
     * Assume each deployment will be utilizing its own database for storing user SSO-related data and credentials
     * Dockerize the application(s) for ease of deploy with thorough deployment instructions
     * Terraform (or other Infrastructure as Code) configuration for multiple cloud providers could make it easier ![#f03c15](https://placehold.it/15/f03c15/000000?text=+)
