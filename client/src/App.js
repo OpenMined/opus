@@ -57,6 +57,20 @@ export default () => {
     console.log('Do login', values);
 
     // TODO: Make fetch() request here to login
+    fetch('http://locahost:5000/login', {
+      method: 'post',
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8'
+      },
+      body: values,
+      mode: 'cors'
+    })
+    .then(function (data) {
+      console.log('Request succeeded with JSON response', data);
+    })
+    .catch(function (error) {
+      console.log('Request failed', error);
+    });  
 
     localStorage.setItem(
       'token',
