@@ -4,3 +4,11 @@ flask_sqlalchemy
 Flask-Migrate
 flask_cors
 flask_testing
+
+# Api docs
+apispec
+apispec-webframeworks
+flasgger
+flask-marshmallow
+marshmallow
+marshmallow-sqlalchemy
