@@ -23,6 +23,24 @@ Importantly, *we do not cache, log, or otherwise store any data provided by thes
 ### Cons to this approach
 This approach has a number of flaws that we can seek to mitigate. However, there are limits to what we can do while a) preserving a simple UX and b) releasing a functional product ASAP. The most major flaw is that the user must trust the host of this PIS to not use their SSO credentials for nefarious purposes. We are just comitting to the user that we are not storing their information. This is perhaps addressible by asking them to enter a password, without which, their credentials are unusable. This would have to be entered every time they SSO with the PIS system, akin to how users have to enter a "master password" when interacting with a password manager. If anyone has any insight on how to implement this, please reach out to Grayson or open an issue.
 
+### Importance
+
+One of the main ways this technology is useful is as a mechanism for combatting disinformation. By aggregating sources of identity verification, we can bolster the user's claim that they are a real individual with verifiable information associated with their identity. Additionally, the ability to convey this information without sharing the user's identity allows us to share what would otherwise be more sensitive information quickly and in a way that is more palatable to the end-user.
+
+One of the more driving use cases for this technology is managing information related to COVID19.
+
+In the coming months, many world health experts predict we will be faced with the prospect of long-term, strict social distancing in order to prevent the complete overwhelming of our healthcare services. Some speculate that we could be facing waves of this distancing for over a year's time while vaccines and cures are developed and tested for safety.
+
+In the face of this, in order for our interconnected world to continue to function, we are going to need the ability to track who is a disease risk, who is not, and who has achieved immunity (insofar as thats possible).
+
+> Ultimately, however, I predict that we’ll restore the ability to socialize safely by developing more sophisticated ways to identify who is a disease risk and who isn’t, and discriminating—legally—against those who are.
+>
+> We can see harbingers of this in the measures some countries are taking today. Israel is going to use the cell-phone location data with which its intelligence services track terrorists to trace people who’ve been in touch with known carriers of the virus. Singapore does exhaustive contact tracing and publishes detailed data on each known case, all but identifying people by name.
+
+Source: https://www.technologyreview.com/s/615370/coronavirus-pandemic-social-distancing-18-months/
+
+We can take Singapore's approach (see https://co.vid19.sg/), which is to make all of this information 100% public and make those infected identifyible with minimal effort, or we can develop systems that allow us to share this information in a way that preserves the privacy of the individuals in question. If we are to enter into a situation where we have to legally discriminate in order to reestablish normalcy in our lives, I believe we must do so in a way that maintains the privacy of the individuals in question. This project, if successful, will enable folks to verify their status from multiple third-party sources without comprimising their identity or sharing their locations directly with those sources.
+
 ## Requirements
 #### Legend
 - May not be necessary for MVP ![#f03c15](https://placehold.it/15/f03c15/000000?text=+)
