@@ -1,16 +1,25 @@
 from flask import Blueprint, Response, redirect, url_for, jsonify, request, g
 from flask_login import current_user, login_user
-from flask_httpauth import HTTPBasicAuth
+from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth
 from app.models import User, db
 from .errors import bad_request, error_response
+from flasgger.utils import swag_from
+
+import os
 
 BASE_URL = ''
+GET_TOKENS_VIEW = {'rule': '/tokens', 'methods': ['POST'], 'endpoint': 'get_tokens'}
+REVOKE_TOKENS_VIEW = {'rule': '/tokens', 'methods': ['DELETE'], 'endpoint': 'revoke_tokens'}
 LOGIN_VIEW = {'rule': '/login', 'methods': ['POST'], 'endpoint': 'login'}
 SIGNUP_VIEW = {'rule': '/signup', 'methods': ['POST'], 'endpoint': 'signup'}
 
 auth = Blueprint(name='auth', import_name=__name__, url_prefix=BASE_URL)
 
+docs_path = lambda *args: os.path.abspath(
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'docs', *args))
+
 basic_auth = HTTPBasicAuth()
+token_auth = HTTPTokenAuth()
 
 @basic_auth.verify_password
 def verify_password(email, password):
@@ -24,12 +33,23 @@ def verify_password(email, password):
 def basic_auth_error():
     return error_response(401)
 
-@auth.route('/tokens', methods=['POST'])
+# Endpoint for getting an authentication token
+@auth.route(**GET_TOKENS_VIEW)
 @basic_auth.login_required
+@swag_from(docs_path('api', 'auth', 'get_tokens.yaml'), methods=['POST'], endpoint='auth.get_tokens')
 def get_token():
     token = g.current_user.get_token()
     db.session.commit()
     return jsonify({'token': token})
+
+# Endpoint for revoking an authentication token
+@auth.route(**REVOKE_TOKENS_VIEW)
+@token_auth.login_required
+@swag_from(docs_path('api', 'auth', 'revoke_tokens.yaml'), methods=['DELETE'], endpoint='auth.revoke_tokens')
+def revoke_token():
+  g.current_user.revoke_token()
+  db.session.commit()
+  return '', 204
 
 # Login route for users to authenticate into
 @auth.route(**LOGIN_VIEW)
