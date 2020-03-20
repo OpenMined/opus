@@ -49,8 +49,21 @@ export default () => {
     signupDisclosure.onClose();
 
     // TODO: Make fetch() request here to signup
-
-    loginDisclosure.onOpen();
+    fetch('http://localhost:5000/signup', {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'Content-type': 'application/json'
+      },
+      body: JSON.stringify(values)
+    })
+    .then(function (data) {
+      console.log('Request succeeded with JSON response', data);
+      loginDisclosure.onOpen();
+    })
+    .catch(function (error) {
+      console.log('Request failed', error);
+    });  
   };
 
   const login = values => {

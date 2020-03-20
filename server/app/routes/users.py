@@ -18,9 +18,10 @@ docs_path = lambda *args: os.path.abspath(
 def users_list():
     """
     Get list of Users
+    TO DO: This will need to be a paginated API to handle massive amounts of users.
     """
     result = User.query.all()
-    return jsonify(result)
+    return jsonify(User)
 
 
 @users.route(**USER_VIEW)
@@ -29,5 +30,4 @@ def users_get(id):
     """
     Get user by id
     """
-    result = User.query.filter_by(id=id).first()
-    return jsonify(result)
+    return jsonify(User.query.get_or_404(id).to_dict())
