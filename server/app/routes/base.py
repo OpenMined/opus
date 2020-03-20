@@ -15,17 +15,17 @@ def init_base_routes(app):
       if user is None or not user.check_password(json['password']):
         return Response("Fail")
       login_user(user)
-      # This shouldn't be a Flask redirect, it should 
+      # This shouldn't be a Flask redirect, it should
       # return the user to home page for the app in React
       return redirect(url_for('index'))
-    
+
   # Signup route for when new users post their data
   @app.route('/signup', methods=['POST'])
   def signup():
     if current_user.is_authenticated:
-        # This shouldn't be a Flask redirect, it should 
+        # This shouldn't be a Flask redirect, it should
         # return the user to home page for the app in React
-        return redirect(url_for'index')
+        return redirect(url_for('index'))
     json = request.json()
     user = User(email=form.email.data)
     user.set_password(form.password.data)
