@@ -1,4 +1,6 @@
-from .base import init_base_routes
+from .users import users
 
-def init_app(app):
-  init_base_routes(app)
+
+all_blueprints = [
+    users,
+]

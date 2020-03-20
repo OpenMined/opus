@@ -4,6 +4,16 @@ flask_sqlalchemy
 Flask-Migrate
 flask_cors
 flask_testing
+
+# Auth
 oauthlib
 pyOpenSSL
 Flask-Login
+
+# Api docs
+apispec
+apispec-webframeworks
+flasgger
+flask-marshmallow
+marshmallow
+marshmallow-sqlalchemy

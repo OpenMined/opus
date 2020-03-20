@@ -1,0 +1,35 @@
+tags:
+  - 'users'
+security:
+  - JWT: []
+parameters:
+  - name: id
+    in: path
+    description: User unique id
+    schema:
+      type: integer
+responses:
+  '200':
+    description: OK
+    content:
+      application/json:
+        schema:
+          $ref: '#/definitions/User'
+  '400':
+    description: Bad request
+    content:
+      application/json:
+        schema:
+          $ref: '#/definitions/Error'
+  '401':
+    description: Bad permissions
+    content:
+      application/json:
+        schema:
+          $ref: '#/definitions/Error'
+  '403':
+    description: Access Denied
+    content:
+      application/json:
+        schema:
+          $ref: '#/definitions/Error'

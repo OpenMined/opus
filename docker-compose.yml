@@ -1,9 +1,14 @@
-version: '3'
+version: "3"
 services:
+  client:
+    image: openmind/pis-client:latest
+    build: ./client/
+    ports:
+      - 80:80
   server:
-    image: openmined/pis:latest
+    image: openmined/pis-server:latest
     build: ./server/
-    volumes: ['./server:/server']
+    volumes: ["./server:/server"]
     restart: always
     environment:
       PORT: 5000
