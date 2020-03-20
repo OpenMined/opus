@@ -3,7 +3,7 @@ from apispec_webframeworks.flask import FlaskPlugin
 from flasgger import Swagger, APISpec, fields
 from flask_marshmallow import Marshmallow
 
-from app.models import User
+from .models import Users
 
 ma = Marshmallow()
 
@@ -14,7 +14,7 @@ class ErrorSchema(ma.Schema):
 
 class UserSchema(ma.ModelSchema):
     class Meta:
-        model = User
+        model = Users
 
 
 definitions = [ErrorSchema, UserSchema]

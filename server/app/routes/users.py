@@ -1,11 +1,15 @@
 import os
-from flask import Blueprint, jsonify
-from app.models import User
+
+from app.models import Users
+from app.services.oauth2 import require_oauth
+from authlib.integrations.flask_oauth2 import current_token
 from flasgger.utils import swag_from
+from flask import Blueprint, jsonify
 
 BASE_URL = '/users'
 USER_LIST_VIEW = {'rule': '', 'methods': ['GET'], 'endpoint': 'list'}
 USER_VIEW = {'rule': '/<id>', 'methods': ['GET'], 'endpoint': 'get'}
+USER_PROFILE = {'rule': '/profile', 'methods': ['GET'], 'endpoint': 'profile'}
 
 users = Blueprint(name='users', import_name=__name__, url_prefix=BASE_URL)
 
@@ -19,7 +23,7 @@ def users_list():
     """
     Get list of Users
     """
-    result = User.query.all()
+    result = Users.query.all()
     return jsonify(result)
 
 
@@ -29,5 +33,13 @@ def users_get(id):
     """
     Get user by id
     """
-    result = User.query.filter_by(id=id).first()
+    result = Users.query.filter_by(id=id).first()
     return jsonify(result)
+
+
+@users.route(**USER_PROFILE)
+@swag_from(docs_path('api', 'users', 'users_with_id_get.yaml'), methods=['GET'], endpoint='users.profile')
+@require_oauth('profile')
+def api_me():
+    user = current_token.user
+    return jsonify(id=user.id, username=user.username)
