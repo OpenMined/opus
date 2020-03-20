@@ -18,10 +18,10 @@ In the interest of expediency, we are choosing to accomplish this by creating a 
 
 In addition, we are implementing a Single Sign On (SSO) server for this service as well. This will allow third-party applications to receive permission to get certain data points about an individual by way of querying the APIs of the accounts in question. During this single-sign on, the user interacting with the third-party service will see which fields the third party is asking for, as well as which of the linked services will provide those fields.
 
-Importantly, *we do not cache, log, or otherwise store any data provided by these third-party APIs*. We simply provide the information to the third party. In addition, we will limit the fields we expose to reduce the risk of reidentifying the user.
+Importantly, *we do not cache, log, or otherwise store any data provided by these third-party APIs*. We simply provide the information to the third party. In addition, we will limit the fields we expose to reduce the risk of re-identifying the user.
 
 ### Cons to this approach
-This approach has a number of flaws that we can seek to mitigate. However, there are limits to what we can do while a) preserving a simple UX and b) releasing a functional product ASAP. The most major flaw is that the user must trust the host of this PIS to not use their SSO credentials for nefarious purposes. We are just comitting to the user that we are not storing their information. This is perhaps addressible by asking them to enter a password, without which, their credentials are unusable. This would have to be entered every time they SSO with the PIS system, akin to how users have to enter a "master password" when interacting with a password manager. If anyone has any insight on how to implement this, please reach out to Grayson or open an issue.
+This approach has a number of flaws that we can seek to mitigate. However, there are limits to what we can do while a) preserving a simple UX and b) releasing a functional product ASAP. The most major flaw is that the user must trust the host of this PIS to not use their SSO credentials for nefarious purposes. We are just committing to the user that we are not storing their information. This is perhaps addressable by asking them to enter a password, without which, their credentials are unusable. This would have to be entered every time they SSO with the PIS system, akin to how users have to enter a "master password" when interacting with a password manager. If anyone has any insight on how to implement this, please reach out to Grayson or open an issue.
 
 ### Importance
 
@@ -31,7 +31,7 @@ One of the more driving use cases for this technology is managing information re
 
 In the coming months, many world health experts predict we will be faced with the prospect of long-term, strict social distancing in order to prevent the complete overwhelming of our healthcare services. Some speculate that we could be facing waves of this distancing for over a year's time while vaccines and cures are developed and tested for safety.
 
-In the face of this, in order for our interconnected world to continue to function, we are going to need the ability to track who is a disease risk, who is not, and who has achieved immunity (insofar as thats possible).
+In the face of this, in order for our interconnected world to continue to function, we are going to need the ability to track who is a disease risk, who is not, and who has achieved immunity (insofar as that's possible).
 
 > Ultimately, however, I predict that we’ll restore the ability to socialize safely by developing more sophisticated ways to identify who is a disease risk and who isn’t, and discriminating—legally—against those who are.
 >
@@ -39,7 +39,7 @@ In the face of this, in order for our interconnected world to continue to functi
 
 Source: https://www.technologyreview.com/s/615370/coronavirus-pandemic-social-distancing-18-months/
 
-We can take Singapore's approach (see https://co.vid19.sg/), which is to make all of this information 100% public and make those infected identifyible with minimal effort, or we can develop systems that allow us to share this information in a way that preserves the privacy of the individuals in question. If we are to enter into a situation where we have to legally discriminate in order to reestablish normalcy in our lives, I believe we must do so in a way that maintains the privacy of the individuals in question. This project, if successful, will enable folks to verify their status from multiple third-party sources without comprimising their identity or sharing their locations directly with those sources.
+We can take Singapore's approach (see https://co.vid19.sg/), which is to make all of this information 100% public and make those infected identifiable with minimal effort, or we can develop systems that allow us to share this information in a way that preserves the privacy of the individuals in question. If we are to enter into a situation where we have to legally discriminate in order to reestablish normalcy in our lives, I believe we must do so in a way that maintains the privacy of the individuals in question. This project, if successful, will enable folks to verify their status from multiple third-party sources without compromising their identity or sharing their locations directly with those sources.
 
 ## Requirements
 #### Legend
@@ -63,7 +63,7 @@ We can take Singapore's approach (see https://co.vid19.sg/), which is to make al
     * Credential should be specific to the third-party organization requesting the data
         * i.e. if Verily wants access to birthdate and sex information, they will receive a token that is specific to their service for querying information about this user. This would be different from the token generated for another COV19 screening application asking for the same information from the same user.
     * Credential should include which fields are accessible via the token in question
-    * Credential should be revokable by the user
+    * Credential should be revocable by the user
     * Credential should be acquired by the third-party application via a single-sign on flow where this identity server is the identity provider
 * Securely disclosing personal information to third-party applications without disclosing the identity of the person involved
     * In-memory data retrieval from the various SSO destinations will be necessary
@@ -77,7 +77,7 @@ We can take Singapore's approach (see https://co.vid19.sg/), which is to make al
             * For example, if we return "birthdate", we should include "as verified by Facebook and LinkedIn"
             * In case of conflicting information, we should return multiple results with the source of each ![#1589F0](https://placehold.it/15/1589F0/000000?text=+)
 
-* Easily deployable server to distribute the trust accross more than one hosting platform
+* Easily deployable server to distribute the trust across more than one hosting platform
     * The separate hosts will not communicate in any way. Therefore, if a user has linked many accounts to host A, then they would have to repeat that process on host B in order to utilize SSO with host B.
     * Assume each deployment will be utilizing its own database for storing user SSO-related data and credentials
     * Dockerize the application(s) for ease of deploy with thorough deployment instructions
