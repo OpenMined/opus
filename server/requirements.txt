@@ -9,6 +9,7 @@ flask_testing
 oauthlib
 pyOpenSSL
 Flask-Login
+flask_httpauth
 
 # Api docs
 apispec
