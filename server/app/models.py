@@ -1,19 +1,11 @@
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 from flask_login import UserMixin
 from flask_login import LoginManager
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
 db = SQLAlchemy()
-migrate = Migrate()
 login = LoginManager()
-
-def init_app(app):
-  db.init_app(app)
-  migrate.init_app(app, db)
-  login.init_app(app)
-
 
 class User(UserMixin, db.Model):
   id = db.Column(db.Integer, primary_key=True)
