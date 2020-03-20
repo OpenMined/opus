@@ -21,8 +21,7 @@ def users_list():
     TO DO: This will need to be a paginated API to handle massive amounts of users.
     """
     result = User.query.all()
-    return jsonify(User)
-
+    return jsonify(result)
 
 @users.route(**USER_VIEW)
 @swag_from(docs_path('api', 'users', 'users_with_id_get.yaml'), methods=['GET'], endpoint='users.get')
