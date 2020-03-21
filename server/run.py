@@ -1,6 +1,6 @@
 import os
 
-from server.app import create_app
+from server.app.pis import create_app
 
 app = create_app()
 

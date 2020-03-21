@@ -9,6 +9,7 @@ class DevelopmentConfig(Config):
         mapping = {
             'PORT': 5000,
             'FLASK_DEBUG': True,
+            'SECRET_KEY': '7d88acba72577d7ba964710bab26af4d',
             'SQLALCHEMY_DATABASE_URI': os.getenv(
                 'SQLALCHEMY_DATABASE_URI',
                 'postgresql://postgres:pis_local_5432@localhost:5432'
@@ -31,6 +32,7 @@ class ProductionConfig(Config):
         mapping = {
             'PORT': 5000,
             'FLASK_DEBUG': False,
+            'SECRET_KEY': os.environ['SECRET_KEY'],
             'SQLALCHEMY_DATABASE_URI': os.environ['SQLALCHEMY_DATABASE_URI'],
             'SQLALCHEMY_TRACK_MODIFICATIONS': os.getenv('SQLALCHEMY_TRACK_MODIFICATIONS', True),
             'DEBUG': False,

@@ -10,6 +10,7 @@ from flask import render_template, redirect, jsonify
 from werkzeug.security import gen_salt
 
 BASE_URL = '/oauth'
+OAUTH_HOME = {'rule': '', 'methods': ['POST', 'GET'], 'endpoint': 'home'}
 OAUTH_AUTHORIZE = {'rule': '/authorize', 'methods': ['POST', 'GET'], 'endpoint': 'authorize'}
 OAUTH_CLIENT = {'rule': '/client', 'methods': ['POST', 'GET'], 'endpoint': 'client'}
 OAUTH_TOKEN = {'rule': '/token', 'methods': ['POST'], 'endpoint': 'token'}
@@ -32,12 +33,33 @@ def split_by_crlf(s):
     return [v for v in s.splitlines() if v]
 
 
+@oauth.route(**OAUTH_HOME)
+@swag_from(docs_path('api', 'oauth', 'oauth_client.yaml'), methods=['GET', 'POST'], endpoint='oauth.home')
+def home():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        user = Users.query.filter_by(username=username).first()
+        if not user:
+            user = Users(username=username, password=password)
+            db.session.add(user)
+            db.session.commit()
+        session['id'] = user.id
+        return redirect('/oauth')
+    user = current_user()
+    if user:
+        clients = OAuth2Client.query.filter_by(user_id=user.id).all()
+    else:
+        clients = []
+    return render_template('home.html', user=user, clients=clients)
+
+
 @oauth.route(**OAUTH_CLIENT)
 @swag_from(docs_path('api', 'oauth', 'oauth_client.yaml'), methods=['GET', 'POST'], endpoint='oauth.client')
 def create_client():
     user = current_user()
     if not user:
-        return redirect('/')
+        return redirect('/oauth')
     if request.method == 'GET':
         return render_template('create_client.html')
     form = request.form
@@ -60,9 +82,8 @@ def create_client():
         "token_endpoint_auth_method": form["token_endpoint_auth_method"]
     }
     client.set_client_metadata(client_metadata)
-    db.session.add(client)
-    db.session.commit()
-    return redirect('/')
+    client.save()
+    return redirect('/oauth')
 
 
 @oauth.route(**OAUTH_AUTHORIZE)
@@ -86,7 +107,7 @@ def oauth_authorize():
 
 
 @oauth.route(**OAUTH_TOKEN)
-@swag_from(docs_path('api', 'oauth', 'oauth_token.yaml'), methods=['GET'], endpoint='oauth.token')
+@swag_from(docs_path('api', 'oauth', 'oauth_token.yaml'), methods=['POST'], endpoint='oauth.token')
 def oauth_token():
     return authorization.create_token_response()
 

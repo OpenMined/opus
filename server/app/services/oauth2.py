@@ -1,4 +1,4 @@
-from app.models import OAuth2Client, OAuth2AuthorizationCode, OAuth2Token
+from app.models import Users, OAuth2Client, OAuth2AuthorizationCode, OAuth2Token
 from app.models import db
 from authlib.integrations.flask_oauth2 import (
     AuthorizationServer, ResourceProtector)
@@ -68,7 +68,7 @@ class AuthorizationCodeGrant(_AuthorizationCodeGrant):
         db.session.commit()
 
     def authenticate_user(self, authorization_code):
-        return User.query.get(authorization_code.user_id)
+        return Users.query.get(authorization_code.user_id)
 
 
 class OpenIDCode(_OpenIDCode):
@@ -119,14 +119,10 @@ def config_oauth(app):
         query_client=query_client,
         save_token=save_token
     )
-
     # support all openid grants
     authorization.register_grant(AuthorizationCodeGrant, [
         OpenIDCode(require_nonce=True),
     ])
-    authorization.register_grant(ImplicitGrant)
-    authorization.register_grant(HybridGrant)
-
     # protect resource
     bearer_cls = create_bearer_token_validator(db.session, OAuth2Token)
     require_oauth.register_token_validator(bearer_cls())

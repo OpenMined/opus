@@ -17,15 +17,21 @@ class UserSchema(ma.ModelSchema):
         model = Users
 
 
-definitions = [ErrorSchema, UserSchema]
+class TokenSchema(ma.Schema):
+    access_token = fields.Str()
+    token_type = fields.Str()
+    expires_in = fields.Str()
+
+
+definitions = [ErrorSchema, UserSchema, TokenSchema]
 
 
 def configure_spec(app):
     ma.init_app(app)
     app.config['SWAGGER'] = {'uiversion': 3}
     spec = APISpec(
-        title='Private Identity Server',
-        version='0.0.0',
+        title=APP_NAME,
+        version=PACKAGE_VERSION,
         openapi_version='2.0',
         plugins=[
             FlaskPlugin(),

@@ -1,31 +1,47 @@
+summary: Authentication Endpoint
+operationId: authorize
+parameters:
+  - name: response_type
+    in: query
+    required: true
+    type: string
+    enum:
+      - id_token
+      - token
+      - code
+  - name: client_id
+    in: query
+    required: true
+    type: string
+  - name: redirect_uri
+    in: query
+    required: true
+    type: string
+  - name: scope
+    in: query
+    required: true
+    type: string
+  - name: grant_type
+    in: query
+    required: true
+    type: string
+    enum:
+      - authorization_code
+      - refresh_token
+
+produces:
+  - application/json
+responses:
+  302:
+    description: Redirect to OAuth provider
+  400:
+    description: Responds with 400 when the grant type is invalid
+    schema:
+      $ref: '#/definitions/Error'
+    examples:
+      application/json: |-
+        {
+          "error":"invalid_grant_type"
+        }
 tags:
   - 'oauth'
-security:
-  - JWT: []
-responses:
-  '200':
-    description: OK
-    content:
-      application/json:
-        schema:
-          type: array
-          items:
-            $ref: '#/definitions/User'
-  '400':
-    description: Bad request
-    content:
-      application/json:
-        schema:
-          $ref: '#/definitions/Error'
-  '401':
-    description: Bad permissions
-    content:
-      application/json:
-        schema:
-          $ref: '#/definitions/Error'
-  '403':
-    description: Access Denied
-    content:
-      application/json:
-        schema:
-          $ref: '#/definitions/Error'
