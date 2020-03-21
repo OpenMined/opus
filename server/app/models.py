@@ -22,6 +22,10 @@ class Users(CRUDMixin, db.Model):
     oauth2_code = db.relationship("OAuth2AuthorizationCode", uselist=True, back_populates="users", cascade=CASCADE)
     oauth2_token = db.relationship("OAuth2Token", uselist=True, back_populates="users", cascade=CASCADE)
 
+    # required by authlib/integrations/sqla_oauth2/functions.py
+    def get_user_id(self):
+        return self.id
+
     @property
     def password(self):
         raise AttributeError('password not readable')

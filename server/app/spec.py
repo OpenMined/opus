@@ -20,7 +20,7 @@ class UserSchema(ma.ModelSchema):
 class TokenSchema(ma.Schema):
     access_token = fields.Str()
     token_type = fields.Str()
-    expires_in = fields.Str()
+    expires_in = fields.Integer()
 
 
 definitions = [ErrorSchema, UserSchema, TokenSchema]
@@ -30,8 +30,8 @@ def configure_spec(app):
     ma.init_app(app)
     app.config['SWAGGER'] = {'uiversion': 3}
     spec = APISpec(
-        title=APP_NAME,
-        version=PACKAGE_VERSION,
+        title='Private Identity Server',
+        version='0.0.0',
         openapi_version='2.0',
         plugins=[
             FlaskPlugin(),
@@ -42,4 +42,14 @@ def configure_spec(app):
         app,
         definitions=definitions
     )
+    template['securityDefinitions'] = {
+        'basicAuth': {
+            'type': 'basic'
+        },
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    }
     Swagger(app, template=template)

@@ -1,12 +1,4 @@
-from app.models import Users, OAuth2Client, OAuth2AuthorizationCode, OAuth2Token
-from app.models import db
-from authlib.integrations.flask_oauth2 import (
-    AuthorizationServer, ResourceProtector)
-from authlib.integrations.sqla_oauth2 import (
-    create_query_client_func,
-    create_save_token_func,
-    create_bearer_token_validator,
-)
+from app.models import Users, OAuth2AuthorizationCode
 from authlib.oauth2.rfc6749.grants import (
     AuthorizationCodeGrant as _AuthorizationCodeGrant,
 )
@@ -16,14 +8,8 @@ from authlib.oidc.core.grants import (
     OpenIDImplicitGrant as _OpenIDImplicitGrant,
     OpenIDHybridGrant as _OpenIDHybridGrant,
 )
+from flask import current_app
 from werkzeug.security import gen_salt
-
-DUMMY_JWT_CONFIG = {
-    'key': 'secret-key',
-    'alg': 'HS256',
-    'iss': 'https://authlib.org',
-    'exp': 3600,
-}
 
 
 def exists_nonce(nonce, req):
@@ -40,7 +26,7 @@ def generate_user_info(user, scope):
 def create_authorization_code(client, grant_user, request):
     code = gen_salt(48)
     nonce = request.data.get('nonce')
-    item = OAuth2AuthorizationCode(
+    OAuth2AuthorizationCode.create(
         code=code,
         client_id=client.client_id,
         redirect_uri=request.redirect_uri,
@@ -48,8 +34,6 @@ def create_authorization_code(client, grant_user, request):
         user_id=grant_user.id,
         nonce=nonce,
     )
-    db.session.add(item)
-    db.session.commit()
     return code
 
 
@@ -64,8 +48,7 @@ class AuthorizationCodeGrant(_AuthorizationCodeGrant):
             return item
 
     def delete_authorization_code(self, authorization_code):
-        db.session.delete(authorization_code)
-        db.session.commit()
+        authorization_code.delete()
 
     def authenticate_user(self, authorization_code):
         return Users.query.get(authorization_code.user_id)
@@ -74,9 +57,6 @@ class AuthorizationCodeGrant(_AuthorizationCodeGrant):
 class OpenIDCode(_OpenIDCode):
     def exists_nonce(self, nonce, request):
         return exists_nonce(nonce, request)
-
-    def get_jwt_config(self, grant):
-        return DUMMY_JWT_CONFIG
 
     def generate_user_info(self, user, scope):
         return generate_user_info(user, scope)
@@ -87,7 +67,7 @@ class ImplicitGrant(_OpenIDImplicitGrant):
         return exists_nonce(nonce, request)
 
     def get_jwt_config(self, grant):
-        return DUMMY_JWT_CONFIG
+        return current_app.config['OAUTH_JWT_CONFIG']
 
     def generate_user_info(self, user, scope):
         return generate_user_info(user, scope)
@@ -101,28 +81,7 @@ class HybridGrant(_OpenIDHybridGrant):
         return exists_nonce(nonce, request)
 
     def get_jwt_config(self):
-        return DUMMY_JWT_CONFIG
+        return current_app.config['OAUTH_JWT_CONFIG']
 
     def generate_user_info(self, user, scope):
         return generate_user_info(user, scope)
-
-
-authorization = AuthorizationServer()
-require_oauth = ResourceProtector()
-
-
-def config_oauth(app):
-    query_client = create_query_client_func(db.session, OAuth2Client)
-    save_token = create_save_token_func(db.session, OAuth2Token)
-    authorization.init_app(
-        app,
-        query_client=query_client,
-        save_token=save_token
-    )
-    # support all openid grants
-    authorization.register_grant(AuthorizationCodeGrant, [
-        OpenIDCode(require_nonce=True),
-    ])
-    # protect resource
-    bearer_cls = create_bearer_token_validator(db.session, OAuth2Token)
-    require_oauth.register_token_validator(bearer_cls())

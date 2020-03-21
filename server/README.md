@@ -23,3 +23,9 @@ To remove all migrations
 ```
 $ inv db.down --revision base
 ```
+
+# Testing the API
+## Generating test data ##
+```
+$ inv create.test-data
+```

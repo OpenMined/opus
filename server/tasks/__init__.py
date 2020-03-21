@@ -1,9 +1,11 @@
 from invoke import task, Collection
 
+from .create import create_collection
 from .db import db_collection
 
 ns = Collection()
 ns.add_collection(db_collection)
+ns.add_collection(create_collection)
 
 
 @task

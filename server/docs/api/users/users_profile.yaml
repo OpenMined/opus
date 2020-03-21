@@ -1,22 +1,14 @@
 tags:
   - 'users'
 security:
-  - JWT: []
+  - Bearer: []
 responses:
   '200':
     description: OK
     content:
       application/json:
         schema:
-          type: array
-          items:
-            $ref: '#/definitions/User'
-  '400':
-    description: Bad request
-    content:
-      application/json:
-        schema:
-          $ref: '#/definitions/Error'
+          $ref: '#/definitions/User'
   '401':
     description: Bad permissions
     content:

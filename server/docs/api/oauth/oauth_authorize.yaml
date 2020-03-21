@@ -6,14 +6,18 @@ parameters:
     required: true
     type: string
     enum:
+      - code
       - id_token
       - token
-      - code
   - name: client_id
     in: query
     required: true
     type: string
   - name: redirect_uri
+    in: query
+    required: true
+    type: string
+  - name: nonce
     in: query
     required: true
     type: string
@@ -27,7 +31,6 @@ parameters:
     type: string
     enum:
       - authorization_code
-      - refresh_token
 
 produces:
   - application/json

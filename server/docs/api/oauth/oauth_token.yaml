@@ -1,3 +1,5 @@
+security:
+  - basicAuth: []
 summary: Request Access Token
 operationId: token
 description: |
@@ -20,6 +22,10 @@ parameters:
     description: |
       The code received in the query string when redirected from authorization
       page
+    required: true
+    type: string
+  - name: redirect_uri
+    in: query
     required: true
     type: string
 responses:
