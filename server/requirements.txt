@@ -3,7 +3,8 @@ psycopg2
 flask_sqlalchemy
 Flask-Migrate
 flask_cors
-flask_testing
+Authlib
+argon2-cffi
 
 # Api docs
 apispec
