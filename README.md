@@ -41,6 +41,21 @@ Source: https://www.technologyreview.com/s/615370/coronavirus-pandemic-social-di
 
 We can take Singapore's approach (see https://co.vid19.sg/), which is to make all of this information 100% public and make those infected identifiable with minimal effort, or we can develop systems that allow us to share this information in a way that preserves the privacy of the individuals in question. If we are to enter into a situation where we have to legally discriminate in order to reestablish normalcy in our lives, I believe we must do so in a way that maintains the privacy of the individuals in question. This project, if successful, will enable folks to verify their status from multiple third-party sources without compromising their identity or sharing their locations directly with those sources.
 
+
+## User Flow
+Here's one view on how this service could work from the perspective of an end-user wanting to verify their COVID-19 infection status for the purposes of interacting with local businesses. For the purposes of this discussion, let's call this user Alice.
+
+1. Alice hears about this new screening service that businesses are using to help mitigate their role in the spread of COVID-19. She follows a link from a news article she read online to our homepage.
+2. Alice signs up on the OMPIS web app to start connecting their accounts together.
+3. After signing into her new account, she sees a list of all of our SSO partners. There's a COVID-specific list and an identity-bolstering list. She goes down the list of the COVID sites, some of which she already has an account for - USA Location Tracing for COVID App, USA COVID infection likeilhood calculator App, USA contract tracing alerts App - and uses single-sign-on (SSO) with each one to hook it into her OMPIS account.
+    * At the time of this writing, there are no clear, widely-adopted applications to handle these use-cases, but many folks have already begun work on trying to solve these problems. See http://safepaths.mit.edu/ for a privacy-preserving way of managing location-tracking and contact tracing).
+4. After signing in with the various COVID apps, she is alerted that her identity still needs more strength behind it, and is suggested a list of SSO-accounts with which to bolster her claim as an individual. She would SSO into Facebook, her banking institution, and her Google account. This strengthens her identity score past the threshold for scanning into the stores she wants to go to.
+5. Once she gets to the store, she'll be able to sign into her OMPIS account and pull up a short-lived, one-time-use QR code. Upon scanning that code, the system in question will query the COVID apps in real-time and retrieve the identity strength score from our application. Since Alice has been signed up for location tracing for awhile, has been carefully avoiding public gatherings, has a high identity strength score, she has a low infection likelihood score, she is allowed into the store.
+
+The store only receives the data surrounding the conclusions of these various applications without having to receive any direct access to the data those applications needed in order to make said conclusions. In addition, the store doesn't know anything about Alice as an individual, other than the fact that she has an OMPIS account and has had her identity verified by these other services.
+
+There are a number of technical considerations that need to be accounted for in the above user flow - it's meant more to generally illustrate how the solution would work than lay out an exact plan. For example, we would need to make sure we can secure the QR code handshake. Those details are yet to have been worked out.
+
 ## Requirements
 #### Legend
 - May not be necessary for MVP ![#f03c15](https://placehold.it/15/f03c15/000000?text=+)
@@ -87,11 +102,9 @@ We can take Singapore's approach (see https://co.vid19.sg/), which is to make al
 ## Open Questions
 * How do we make the transition away from the short-term, semi-centrilized model to utilizing Aries?
 * How can we easily allow for quick deployment as we make updates to this core application to all the various organizations hosting it?
-* What technology stack should we use to get this off the ground quickly, but also allow for ease of hosting by third parties?
-* How should we implement single-sign on?
-    * https://authlib.org/ seems like a good option, especially since it covers our needs for an OAuth Client as well
 * Will we meet the terms of use for Facebook, Twitter, etc. in order to extract information?
     * We should run this proposal by legal counsel in order to verify our approach. For now, we'll proceed assuming we'll get approval in the long-run.
+* How can we secure the transmission of sensitive information in-person while still providing a seamless UX?
 
 ## Needs
 * Security Audit / Review
