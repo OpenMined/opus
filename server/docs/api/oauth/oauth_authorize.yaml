@@ -1,0 +1,50 @@
+summary: Authentication Endpoint
+operationId: authorize
+parameters:
+  - name: response_type
+    in: query
+    required: true
+    type: string
+    enum:
+      - code
+      - id_token
+      - token
+  - name: client_id
+    in: query
+    required: true
+    type: string
+  - name: redirect_uri
+    in: query
+    required: true
+    type: string
+  - name: nonce
+    in: query
+    required: true
+    type: string
+  - name: scope
+    in: query
+    required: true
+    type: string
+  - name: grant_type
+    in: query
+    required: true
+    type: string
+    enum:
+      - authorization_code
+
+produces:
+  - application/json
+responses:
+  302:
+    description: Redirect to OAuth provider
+  400:
+    description: Responds with 400 when the grant type is invalid
+    schema:
+      $ref: '#/definitions/Error'
+    examples:
+      application/json: |-
+        {
+          "error":"invalid_grant_type"
+        }
+tags:
+  - 'oauth'

@@ -1,0 +1,11 @@
+tags:
+  - 'oauth'
+summary: Revoke access token
+operationId: revoke
+responses:
+  200:
+    description: Empty body with 200 code
+  403:
+    description: Access Token already invalidated or not found
+  500:
+    description: Internal server error

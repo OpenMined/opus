@@ -3,7 +3,7 @@ from apispec_webframeworks.flask import FlaskPlugin
 from flasgger import Swagger, APISpec, fields
 from flask_marshmallow import Marshmallow
 
-from app.models import User
+from .models import Users
 
 ma = Marshmallow()
 
@@ -14,10 +14,16 @@ class ErrorSchema(ma.Schema):
 
 class UserSchema(ma.ModelSchema):
     class Meta:
-        model = User
+        model = Users
 
 
-definitions = [ErrorSchema, UserSchema]
+class TokenSchema(ma.Schema):
+    access_token = fields.Str()
+    token_type = fields.Str()
+    expires_in = fields.Integer()
+
+
+definitions = [ErrorSchema, UserSchema, TokenSchema]
 
 
 def configure_spec(app):
@@ -36,4 +42,14 @@ def configure_spec(app):
         app,
         definitions=definitions
     )
+    template['securityDefinitions'] = {
+        'basicAuth': {
+            'type': 'basic'
+        },
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    }
     Swagger(app, template=template)

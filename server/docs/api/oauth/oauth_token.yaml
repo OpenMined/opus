@@ -1,0 +1,53 @@
+security:
+  - basicAuth: []
+summary: Request Access Token
+operationId: token
+description: |
+  Partner makes a request to the token endpoint by adding the
+  following parameters described below
+consumes:
+  - application/x-www-form-urlencoded
+produces:
+  - application/json
+parameters:
+  - name: grant_type
+    in: formData
+    description: Value MUST be set to "authorization_code" as per RFC
+    required: true
+    type: string
+    enum:
+      - authorization_code
+  - name: code
+    in: formData
+    description: |
+      The code received in the query string when redirected from authorization
+      page
+    required: true
+    type: string
+  - name: redirect_uri
+    in: query
+    required: true
+    type: string
+responses:
+  200:
+    description: Authorisation token (Bearer)
+    schema:
+      $ref: '#/definitions/Token'
+    examples:
+      application/json: |-
+        {
+           "access_token": "ACCESS_TOKEN",
+           "token_type": "Bearer",
+           "expires_in": 3600,
+         }
+  400:
+    description: As per RFC authorisation server responds with 400 in case of error
+    schema:
+      $ref: '#/definitions/Error'
+    examples:
+      application/json: |-
+        {
+          "error":"invalid_request"
+        }
+tags:
+  - oauth
