@@ -56,6 +56,8 @@ The store only receives the data surrounding the conclusions of these various ap
 
 There are a number of technical considerations that need to be accounted for in the above user flow - it's meant more to generally illustrate how the solution would work than lay out an exact plan. For example, we would need to make sure we can secure the QR code handshake. Those details are yet to have been worked out.
 
+![Pictorial representation of user flow](https://raw.githubusercontent.com/chaitanyajun12/private-identity-server/kcm/PictorialRepresentationOfUserFlow/doc/pis_pictorial_representation.png)
+
 ## Requirements
 #### Legend
 - May not be necessary for MVP ![#f03c15](https://placehold.it/15/f03c15/000000?text=+)
