@@ -1,8 +1,17 @@
 tags:
   - 'users'
-security:
-  - Bearer: []
-summary: Returns the user profile after going through the SSO flow
+summary: User registration endpoint
+consumes:
+  - application/json
+parameters:
+  - in: body
+    name: user
+    description: The user to create.
+    schema:
+      required:
+        - username
+        - password
+      $ref: '#/definitions/User'
 responses:
   '200':
     description: OK
@@ -10,14 +19,8 @@ responses:
       application/json:
         schema:
           $ref: '#/definitions/User'
-  '401':
+  '400':
     description: Bad permissions
-    content:
-      application/json:
-        schema:
-          $ref: '#/definitions/Error'
-  '403':
-    description: Access Denied
     content:
       application/json:
         schema:

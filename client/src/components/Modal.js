@@ -1,12 +1,12 @@
-import React from 'react';
+import React from "react";
 import {
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
   ModalCloseButton,
-  ModalBody
-} from '@chakra-ui/core';
+  ModalBody,
+} from "@chakra-ui/core";
 
 export default ({ isOpen, onClose, title, children }) => (
   <Modal isOpen={isOpen} onClose={onClose}>

@@ -1,3 +1,5 @@
+from app.constants import CASCADE, KEEP_PARENTS
+from app.database import CRUDMixin, db, GUID
 from authlib.integrations.sqla_oauth2 import (
     OAuth2ClientMixin,
     OAuth2AuthorizationCodeMixin,
@@ -5,17 +7,11 @@ from authlib.integrations.sqla_oauth2 import (
 )
 from flask import current_app
 
-from .constants import CASCADE, KEEP_PARENTS
-from .database import CRUDMixin, db, GUID
-
-
-def check_password_hash(pw_hash, password):
-    return current_app.extensions['password_hasher'].verify(pw_hash, password)
-
 
 class Users(CRUDMixin, db.Model):
     __tablename__ = 'users'
-    username = db.Column(db.String(255), unique=True)
+    username = db.Column(db.String(255))
+    email = db.Column(db.String(255), unique=True)
     password_hash = db.Column(db.String(128))
 
     oauth2_client = db.relationship("OAuth2Client", uselist=True, back_populates="users", cascade=CASCADE)
@@ -30,9 +26,20 @@ class Users(CRUDMixin, db.Model):
     def password(self):
         raise AttributeError('password not readable')
 
+    @property
+    def brief(self):
+        return {
+            "id": self.id,
+            "email": self.email,
+            "username": self.username
+        }
+
     @password.setter
     def password(self, password):
         self.password_hash = current_app.extensions['password_hasher'].hash(password)
+
+    def password_correct(self, password):
+        return current_app.extensions['password_hasher'].verify(self.password_hash, password)
 
 
 class OAuth2Client(CRUDMixin, db.Model, OAuth2ClientMixin):
@@ -51,6 +58,8 @@ class OAuth2AuthorizationCode(CRUDMixin, db.Model, OAuth2AuthorizationCodeMixin)
 
 class OAuth2Token(CRUDMixin, db.Model, OAuth2TokenMixin):
     __tablename__ = 'oauth2_token'
+
+    provider = db.Column('provider', db.String(255), nullable=False, default='pis')
 
     user_id = db.Column('user_id', GUID(), db.ForeignKey('users.id', name="oauth2_token_user_id_fkey"), nullable=False)
     users = db.relationship("Users", uselist=False, back_populates="oauth2_token", cascade=KEEP_PARENTS)

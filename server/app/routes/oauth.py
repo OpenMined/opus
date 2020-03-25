@@ -1,6 +1,5 @@
-import os
-
 from app.models import Users
+from app.utils.spec import docs_path
 from authlib.oauth2 import OAuth2Error
 from flasgger.utils import swag_from
 from flask import Blueprint, request, session, current_app, jsonify, render_template
@@ -11,9 +10,6 @@ OAUTH_TOKEN = {'rule': '/token', 'methods': ['POST'], 'endpoint': 'token'}
 OAUTH_REVOKE = {'rule': '/revoke', 'methods': ['POST'], 'endpoint': 'revoke'}
 
 oauth = Blueprint(name='oauth', import_name=__name__, url_prefix=BASE_URL)
-
-docs_path = lambda *args: os.path.abspath(
-    os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', 'docs', *args))
 
 
 def current_user():

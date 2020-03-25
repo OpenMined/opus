@@ -1,9 +1,12 @@
-import icon from './logo.svg';
+import icon from "./logo.svg";
 
 export default {
-  name: 'Github',
+  name: "Github",
   icon,
-  description: 'Where the world hosts its code',
-  onConnect: () => console.log('Do Github login'),
-  onDisconnect: () => console.log('Do Github logout')
+  description: "Where the world hosts its code",
+  onConnect: () => {
+    const url = `${process.env.BASE_URL || "http://localhost:5000"}/sso/github`;
+    window.location.replace(url);
+  },
+  onDisconnect: () => console.log("Do Github logout"),
 };

@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { useDisclosure, Button, Stack, Box, SimpleGrid } from '@chakra-ui/core';
+import React, { useEffect, useState } from "react";
+import { Box, Button, SimpleGrid, Stack, useDisclosure } from "@chakra-ui/core";
 
-import services from './services';
-
-import Modal from './components/Modal';
-import SignupForm from './components/SignupForm';
-import LoginForm from './components/LoginForm';
-import Service from './components/Service';
+import services from "./services";
+import { apiClient } from "./api";
+import Modal from "./components/Modal";
+import SignupForm from "./components/SignupForm";
+import LoginForm from "./components/LoginForm";
+import Service from "./components/Service";
+import { TokenManager } from "./storage";
 
 export default () => {
   const signupDisclosure = useDisclosure();
   const loginDisclosure = useDisclosure();
 
   const prepServices = () =>
-    services.map(s => {
+    services.map((s) => {
       s.isConnected = false;
       return s;
     });
@@ -21,19 +22,13 @@ export default () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [currentServices, setCurrentServices] = useState(null);
 
-  const getCurrentUser = () => {
-    console.log('Checking if a user is logged in');
-
-    const localToken = JSON.parse(localStorage.getItem('token'));
-
-    // TODO: Make fetch() request here to get user information
-    // TODO: Make fetch() request here to get existing services
-
-    if (localToken) {
-      setCurrentUser(localToken.token);
+  const getCurrentUser = async () => {
+    if (TokenManager.isAuthenticated()) {
+      const providers = await apiClient.providers();
+      setCurrentUser(TokenManager.getToken());
       setCurrentServices(
-        services.map(s => {
-          if (localToken.services.includes(s.name)) s.isConnected = true;
+        services.map((s) => {
+          if (providers.includes(s.name)) s.isConnected = true;
           return s;
         })
       );
@@ -43,66 +38,37 @@ export default () => {
     }
   };
 
-  const signup = values => {
-    console.log('Do signup', values);
+  const signup = async (values) => {
+    console.log("Do signup", values);
 
     signupDisclosure.onClose();
 
-    // TODO: Make fetch() request here to signup
+    const response = await apiClient.register(values);
 
     loginDisclosure.onOpen();
   };
 
-  const login = values => {
-    console.log('Do login', values);
+  const login = async (values) => {
+    const response = await apiClient.login(values);
+    TokenManager.setSession(response);
 
-    // TODO: Make fetch() request here to login
-
-    localStorage.setItem(
-      'token',
-      JSON.stringify({
-        token: 'my-special-auth-token',
-        services: ['Facebook', 'Github']
-      })
-    );
-    getCurrentUser();
+    await getCurrentUser();
 
     loginDisclosure.onClose();
   };
 
-  const logout = () => {
-    console.log('Do logout');
-
-    localStorage.removeItem('token');
-    getCurrentUser();
-  };
-
-  const toggleServiceConnection = name => {
-    console.log('Toggling service', name);
-
-    const token = JSON.parse(localStorage.getItem('token'));
-    const tokenServiceIndex = token.services.indexOf(name);
-
-    if (tokenServiceIndex === -1) token.services.push(name);
-    else token.services.splice(tokenServiceIndex, 1);
-
-    localStorage.setItem('token', JSON.stringify(token));
-
-    const newServices = currentServices.map(s => {
-      if (s.name === name) s.isConnected = !s.isConnected;
-      return s;
-    });
-
-    setCurrentServices(newServices);
+  const logout = async () => {
+    TokenManager.clearTokenStorage();
+    await getCurrentUser();
   };
 
   useEffect(getCurrentUser, []);
 
   return (
-    <Box mx="auto" width={['100%', null, 720, 960, 1200]} px={3} pb={6}>
+    <Box mx="auto" width={["100%", null, 720, 960, 1200]} px={3} pb={6}>
       {!currentUser && (
         <>
-          <Box mx="auto" width={['100%', 200]} py={6}>
+          <Box mx="auto" width={["100%", 200]} py={6}>
             <Stack spacing={4}>
               <Button variantColor="blue" onClick={signupDisclosure.onOpen}>
                 Signup
@@ -122,16 +88,12 @@ export default () => {
       )}
       {currentUser && (
         <>
-          <Box mx="auto" width={['100%', 200]} py={6}>
+          <Box mx="auto" width={["100%", 200]} py={6}>
             <Button onClick={logout}>Logout</Button>
           </Box>
           <SimpleGrid columns={[1, null, 2, 3]} spacing={[3, null, 5]}>
-            {currentServices.map(service => (
-              <Service
-                key={service.name}
-                onToggle={toggleServiceConnection}
-                {...service}
-              />
+            {currentServices.map((service) => (
+              <Service key={service.name} {...service} />
             ))}
           </SimpleGrid>
         </>
