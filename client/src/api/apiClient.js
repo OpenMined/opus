@@ -2,7 +2,7 @@ import BaseClient from "./baseClient";
 import { TokenManager } from "../storage";
 class ApiClient extends BaseClient {
   getAuthorizationHeaders() {
-    return { Authorization: TokenManager.getToken() };
+    return { Authorization: `Bearer ${TokenManager.getToken()}` };
   }
 
   async login(body) {
@@ -15,6 +15,10 @@ class ApiClient extends BaseClient {
 
   async providers() {
     return this.get("/sso/providers", { noAuthHeader: false });
+  }
+
+  async revokeGithubToken() {
+    return this.post("/sso/github/revoke", { noAuthHeader: false });
   }
 }
 

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node -r dotenv/config  react-scripts start",
+    "start": "NODE_ENV=local node -r dotenv/config  react-scripts start",
     "build": "NODE_ENV=production node -r dotenv/config  react-scripts build",
     "test": "NODE_ENV=test node -r dotenv/config react-scripts test",
     "eject": "react-scripts eject"

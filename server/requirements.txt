@@ -4,7 +4,8 @@ flask_sqlalchemy
 Flask-Migrate
 flask_cors
 Authlib
-flask-jwt-extended[asymmetric_crypto]
+requests
+pyjwt
 argon2-cffi
 
 # Api docs

@@ -4,8 +4,10 @@ import os
 from flask import Flask, Request
 from werkzeug.exceptions import BadRequest
 
+from .constants import INTERNAL_SERVER_ERROR, NOT_FOUND
 from .database import db
-from .extensions import migrate, password_hasher, config_oauth_server, config_oauth_client, jwt, cors
+from .errors import MESSAGES
+from .extensions import migrate, password_hasher, config_oauth_server, config_oauth_client, cors
 from .routes import all_blueprints
 from .spec import configure_spec
 
@@ -50,7 +52,6 @@ def register_extensions(app):
     """
     password_hasher(app)
     db.init_app(app)
-    jwt.init_app(app)
     migrate.init_app(app, db)
     cors.init_app(app)
     config_oauth_client(app)

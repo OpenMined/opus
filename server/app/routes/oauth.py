@@ -1,3 +1,4 @@
+from app.constants import Extensions
 from app.models import Users
 from app.utils.spec import docs_path
 from authlib.oauth2 import OAuth2Error
@@ -25,7 +26,7 @@ def oauth_authorize():
     user = current_user()
     if request.method == 'GET':
         try:
-            grant = current_app.extensions['authorization'].validate_consent_request(end_user=user)
+            grant = current_app.extensions[Extensions.AUTHORIZATION].validate_consent_request(end_user=user)
         except OAuth2Error as error:
             return jsonify(dict(error.get_body()))
         return render_template('authorize.html', user=user, grant=grant)
@@ -36,16 +37,16 @@ def oauth_authorize():
         grant_user = user
     else:
         grant_user = None
-    return current_app.extensions['authorization'].create_authorization_response(grant_user=grant_user)
+    return current_app.extensions[Extensions.AUTHORIZATION].create_authorization_response(grant_user=grant_user)
 
 
 @oauth.route(**OAUTH_TOKEN)
 @swag_from(docs_path('api', 'oauth', 'oauth_token.yaml'), methods=['POST'], endpoint='oauth.token')
 def oauth_token():
-    return current_app.extensions['authorization'].create_token_response()
+    return current_app.extensions[Extensions.AUTHORIZATION].create_token_response()
 
 
 @oauth.route(**OAUTH_REVOKE)
 @swag_from(docs_path('api', 'oauth', 'oauth_revoke.yaml'), methods=['GET'], endpoint='oauth.revoke')
 def oauth_revoke():
-    return current_app.extensions['authorization'].create_endpoint_response('revocation')
+    return current_app.extensions[Extensions.AUTHORIZATION].create_endpoint_response('revocation')

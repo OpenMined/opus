@@ -1,14 +1,14 @@
-import os
 from functools import wraps
 
 from authlib.integrations.flask_oauth2 import current_token
 from flasgger.utils import swag_from
 from flask import Blueprint, jsonify, current_app, request
-from flask_jwt_extended import create_access_token, create_refresh_token
-from app.utils.spec import docs_path
 
-from app.constants import BAD_REQUEST, UNAUTHORIZED, SUCCESS
+from app.constants import BAD_REQUEST, UNAUTHORIZED, SUCCESS, Extensions
+from app.errors import error_response, NOT_MATCHING_PASSWORDS_MSG
 from app.models import Users
+from app.utils.permissions import encode_refresh_token, encode_access_token
+from app.utils.spec import docs_path
 
 BASE_URL = '/users'
 USERS_LOGIN = {'rule': '/login', 'methods': ['POST'], 'endpoint': 'login'}
@@ -24,10 +24,15 @@ users = Blueprint(name='users', import_name=__name__, url_prefix=BASE_URL)
 )
 def users_register():
     request_data = request.get_json()
-    user = Users.query.filter_by(**request_data).first()
+    email = request_data['email']
+    user = Users.query.filter_by(email=email).first()
     if user:
         return jsonify(user.brief), SUCCESS
-    user = Users.create(**request_data)
+
+    password = request_data['password']
+    if not password or password != request_data['passwordMatch']:
+        return error_response(NOT_MATCHING_PASSWORDS_MSG)
+    user = Users.create(email=email, password=password, username=email.split('@')[0])
     return jsonify(user.brief), SUCCESS
 
 
@@ -44,8 +49,8 @@ def users_login():
         return jsonify({"msg": "Password and username don't match"}), UNAUTHORIZED
 
     return jsonify({
-        'access_token': create_access_token(identity=request_data['email']),
-        'refresh_token': create_refresh_token(identity=request_data['email'])
+        'access_token': encode_access_token(request_data['email']),
+        'refresh_token': encode_refresh_token(request_data['email'])
     }), SUCCESS
 
 
@@ -53,7 +58,7 @@ def require_oauth(scope):
     def wrapper(f):
         @wraps(f)
         def decorated(*args, **kwargs):
-            return current_app.extensions['require_oauth'](scope)(f)(*args, **kwargs)
+            return current_app.extensions[Extensions.REQUIRE_OAUTH](scope)(f)(*args, **kwargs)
 
         return decorated
 

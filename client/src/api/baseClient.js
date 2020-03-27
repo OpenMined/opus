@@ -78,7 +78,9 @@ class BaseClient {
     const { url, ...params } = await this.generateRequest({ path, ...props });
     const response = await fetch(url, params);
     const responseData = await response.text();
-    return isJSON(responseData) ? JSON.parse(responseData) : responseData;
+    return isJSON(responseData)
+      ? { status: response.status, data: JSON.parse(responseData) }
+      : { status: response.status, data: responseData };
   }
 
   get(path, options) {

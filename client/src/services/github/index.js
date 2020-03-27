@@ -1,4 +1,5 @@
 import icon from "./logo.svg";
+import { apiClient, triggerSideEffect } from "../../api";
 
 export default {
   name: "Github",
@@ -8,5 +9,11 @@ export default {
     const url = `${process.env.BASE_URL || "http://localhost:5000"}/sso/github`;
     window.location.replace(url);
   },
-  onDisconnect: () => console.log("Do Github logout"),
+  onDisconnect: async (onSuccess, onError) => {
+    triggerSideEffect({
+      apiCall: () => apiClient.revokeGithubToken(),
+      onSuccess,
+      onError,
+    });
+  },
 };

@@ -8,7 +8,6 @@ export default ({
   onConnect,
   onDisconnect,
   isConnected,
-  onToggle,
 }) => (
   <Flex
     flexDirection="column"
@@ -32,8 +31,6 @@ export default ({
       onClick={() => {
         if (isConnected) onDisconnect();
         else onConnect();
-
-        onToggle(name);
       }}
       variantColor={isConnected ? "red" : "blue"}
     >
