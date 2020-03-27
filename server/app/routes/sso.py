@@ -49,7 +49,7 @@ def sso_github_authorize():
     profile = resp.json()
     user = Users.query.filter_by(email=profile['email']).first()
     if not user:
-        return redirect(current_app.config['FRONTEND_HOST'], BAD_REQUEST, jsonify({"msg": "User not found"}))
+        return redirect(current_app.config['FRONTEND_HOST'], BAD_REQUEST, jsonify({"message": "User not found"}))
 
     OAuth2Token.create(
         client_id=oauth.github.client_id,

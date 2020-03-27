@@ -13,6 +13,7 @@ services:
     environment:
       PORT: 5000
       FLASK_CONFIGURATION: development
+      FRONTEND_HOST: http://localhost
       SQLALCHEMY_DATABASE_URI: postgresql://postgres:pis_local_5432@db:5432
     ports:
       - 5000:5000

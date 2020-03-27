@@ -5,7 +5,7 @@ from flasgger.utils import swag_from
 from flask import Blueprint, jsonify, current_app, request
 
 from app.constants import BAD_REQUEST, UNAUTHORIZED, SUCCESS, Extensions
-from app.errors import error_response, NOT_MATCHING_PASSWORDS_MSG
+from app.errors import error_response, NOT_MATCHING_PASSWORDS_MSG, USER_NOT_FOUND_MSG, INVALID_CREDENTIAL_MSG
 from app.models import Users
 from app.utils.permissions import encode_refresh_token, encode_access_token
 from app.utils.spec import docs_path
@@ -44,9 +44,9 @@ def users_login():
     request_data = request.get_json()
     user = Users.query.filter_by(email=request_data['email']).first()
     if user is None:
-        return jsonify({"msg": "User not found"}), BAD_REQUEST
+        return error_response(USER_NOT_FOUND_MSG)
     elif not user.password_correct(request_data['password']):
-        return jsonify({"msg": "Password and username don't match"}), UNAUTHORIZED
+        return error_response(INVALID_CREDENTIAL_MSG)
 
     return jsonify({
         'access_token': encode_access_token(request_data['email']),
