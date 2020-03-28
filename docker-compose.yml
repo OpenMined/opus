@@ -1,25 +1,27 @@
 version: "3"
 services:
   client:
-    image: openmind/pis-client:latest
+    image: openmind/opus-client:latest
     build: ./client/
     ports:
       - 80:80
   server:
-    image: openmined/pis-server:latest
+    image: openmined/opus-server:latest
     build: ./server/
     volumes: ["./server:/server"]
     restart: always
+    ports:
+      - 5000:5000
+    depends_on:
+      - "db"
     environment:
       PORT: 5000
       FLASK_CONFIGURATION: development
       FRONTEND_HOST: http://localhost
-      SQLALCHEMY_DATABASE_URI: postgresql://postgres:pis_local_5432@db:5432
-    ports:
-      - 5000:5000
+      SQLALCHEMY_DATABASE_URI: postgresql://postgres:opus_local_5432@db:5432
   db:
     image: postgres:11.7-alpine
     environment:
-      POSTGRES_PASSWORD: pis_local_5432
+      POSTGRES_PASSWORD: opus_local_5432
     ports:
       - 5432:5432
