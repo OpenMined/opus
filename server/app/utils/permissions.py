@@ -6,7 +6,7 @@ from functools import wraps
 import jwt
 from flask import current_app, request
 
-from app.errors import error_response, NO_TOKEN_MSG, BAD_TOKEN_MSG
+from app.errors.messages import error_response, NO_TOKEN_MSG, BAD_TOKEN_MSG
 
 
 def _encode_jwt(additional_token_data, expires_delta):

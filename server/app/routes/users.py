@@ -4,8 +4,8 @@ from authlib.integrations.flask_oauth2 import current_token
 from flasgger.utils import swag_from
 from flask import Blueprint, jsonify, current_app, request
 
-from app.constants import BAD_REQUEST, UNAUTHORIZED, SUCCESS, Extensions
-from app.errors import error_response, NOT_MATCHING_PASSWORDS_MSG, USER_NOT_FOUND_MSG, INVALID_CREDENTIAL_MSG
+from app.constants import SUCCESS, Extensions
+from app.errors.messages import error_response, INCORRECT_PASSWORD, USER_NOT_FOUND_MSG, INVALID_CREDENTIAL_MSG
 from app.models import Users
 from app.utils.permissions import encode_refresh_token, encode_access_token
 from app.utils.spec import docs_path
@@ -31,7 +31,7 @@ def users_register():
 
     password = request_data['password']
     if not password or password != request_data['passwordMatch']:
-        return error_response(NOT_MATCHING_PASSWORDS_MSG)
+        return error_response(INCORRECT_PASSWORD)
     user = Users.create(email=email, password=password, username=email.split('@')[0])
     return jsonify(user.brief), SUCCESS
 

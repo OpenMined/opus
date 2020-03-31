@@ -1,5 +1,5 @@
 import icon from "./logo.svg";
-import { apiClient, triggerSideEffect } from "../../api";
+import { apiClient, triggerSideEffect } from "../../../../api";
 
 export default {
   name: "Github",

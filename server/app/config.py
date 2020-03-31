@@ -27,7 +27,7 @@ class DevelopmentConfig(Config):
             'SECRET_KEY': '7d88acba72577d7ba964710bab26af4d',
             'SQLALCHEMY_DATABASE_URI': os.getenv(
                 'SQLALCHEMY_DATABASE_URI',
-                'postgresql://postgres:pis_local_5432@localhost:5432'
+                'postgresql://postgres:opus_local_5432@localhost:5432'
             ),
             'SQLALCHEMY_TRACK_MODIFICATIONS': os.getenv('SQLALCHEMY_TRACK_MODIFICATIONS', True),
             'DEBUG': True,
