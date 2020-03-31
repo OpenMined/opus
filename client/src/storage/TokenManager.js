@@ -16,14 +16,14 @@ export default class TokenManager {
   static getRefreshToken() {
     return localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
   }
+
   static isAuthenticated() {
-    // Check whether the current time is past the
-    // Access token's expiry time
     const expiresAt = Number(localStorage.getItem(STORAGE_KEYS.EXPIRES_AT));
     return (
       TokenManager.getToken() && expiresAt && new Date().getTime() < expiresAt
     );
   }
+
   static setSession = ({ access_token, refresh_token }) => {
     const { exp } = jwtDecode(access_token);
     localStorage.setItem(STORAGE_KEYS.EXPIRES_AT, (exp * 1000).toString());
