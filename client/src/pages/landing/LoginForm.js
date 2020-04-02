@@ -1,12 +1,12 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
+import React from "react";
+import { useForm } from "react-hook-form";
 import {
   FormErrorMessage,
   FormLabel,
   FormControl,
   Input,
-  Button
-} from '@chakra-ui/core';
+  Button,
+} from "@chakra-ui/core";
 
 export default ({ onSubmit }) => {
   const { handleSubmit, errors, register, formState } = useForm();
@@ -19,11 +19,11 @@ export default ({ onSubmit }) => {
           name="email"
           placeholder="person@example.com"
           ref={register({
-            required: 'Email address is required',
+            required: "Email address is required",
             pattern: {
               value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-              message: 'Invalid email address'
-            }
+              message: "Invalid email address",
+            },
           })}
         />
         <FormErrorMessage>
@@ -37,7 +37,7 @@ export default ({ onSubmit }) => {
           type="password"
           placeholder="Password"
           ref={register({
-            required: 'Password is required'
+            required: "Password is required",
           })}
         />
         <FormErrorMessage>

@@ -1,5 +1,5 @@
-import React from 'react';
-import { Heading, Image, Text, Button, Flex } from '@chakra-ui/core';
+import React from "react";
+import { Heading, Image, Text, Button, Flex } from "@chakra-ui/core";
 
 export default ({
   name,
@@ -8,7 +8,6 @@ export default ({
   onConnect,
   onDisconnect,
   isConnected,
-  onToggle
 }) => (
   <Flex
     flexDirection="column"
@@ -32,11 +31,8 @@ export default ({
       onClick={() => {
         if (isConnected) onDisconnect();
         else onConnect();
-
-        // TODO: Maybe only fire onToggle() as the result of a promise?
-        onToggle(name);
       }}
-      variantColor={isConnected ? 'red' : 'blue'}
+      variantColor={isConnected ? "red" : "blue"}
     >
       {isConnected ? `Disconnect from ${name}` : `Connect to ${name}`}
     </Button>

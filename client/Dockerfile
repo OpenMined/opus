@@ -5,13 +5,12 @@ WORKDIR /app
 
 # Copy & install packages first to preserve layers
 COPY package*.json /app/
-COPY yarn.lock /app/
 
-RUN yarn install
+RUN npm install
 
 COPY ./ /app/
 
-RUN yarn run build
+RUN npm run build
 
 # Stage 1, based on Nginx, to have only the compiled app, ready for production with Nginx
 FROM nginx:1.15

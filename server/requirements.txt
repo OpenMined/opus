@@ -4,6 +4,8 @@ flask_sqlalchemy
 Flask-Migrate
 flask_cors
 Authlib
+requests
+pyjwt
 argon2-cffi
 
 # Api docs

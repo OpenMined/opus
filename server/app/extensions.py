@@ -1,4 +1,5 @@
 import argon2
+from authlib.integrations.flask_client import OAuth
 from authlib.integrations.flask_oauth2 import (
     AuthorizationServer, ResourceProtector)
 from authlib.integrations.sqla_oauth2 import (
@@ -6,13 +7,16 @@ from authlib.integrations.sqla_oauth2 import (
     create_save_token_func,
     create_bearer_token_validator,
 )
+from flask_cors import CORS
 from flask_migrate import Migrate
 
+from .constants import Extensions
 from .database import db
 from .models import OAuth2Token, OAuth2Client
 from .services.oauth2 import AuthorizationCodeGrant, OpenIDCode, HybridGrant
 
 migrate = Migrate()
+cors = CORS()
 
 
 def register_as_extension(app, name, object_instance):
@@ -25,7 +29,20 @@ def register_as_extension(app, name, object_instance):
     app.extensions[name] = object_instance
 
 
-def config_oauth(app):
+def config_oauth_client(app):
+    oauth = OAuth(app)
+    oauth.register(
+        name='github',
+        client_id='7026c5fe3eaf27646dc4',
+        client_secret='5801cd4af16af69d45472f1a6b344b4cd53642aa',
+        access_token_url='https://github.com/login/oauth/access_token',
+        authorize_url='https://github.com/login/oauth/authorize',
+        api_base_url='https://api.github.com/',
+        client_kwargs={'scope': 'user:email'},
+    )
+
+
+def config_oauth_server(app):
     require_oauth = ResourceProtector()
     authorization = AuthorizationServer()
     query_client = create_query_client_func(db.session, OAuth2Client)
@@ -45,8 +62,8 @@ def config_oauth(app):
     bearer_cls = create_bearer_token_validator(db.session, OAuth2Token)
     require_oauth.register_token_validator(bearer_cls())
 
-    register_as_extension(app, 'authorization', authorization)
-    register_as_extension(app, 'require_oauth', require_oauth)
+    register_as_extension(app, Extensions.AUTHORIZATION, authorization)
+    register_as_extension(app, Extensions.REQUIRE_OAUTH, require_oauth)
 
 
 def password_hasher(app):
@@ -58,4 +75,4 @@ def password_hasher(app):
         salt_len=app.config.get('ARGON2_SALT_LENGTH', argon2.DEFAULT_RANDOM_SALT_LENGTH),
         encoding=app.config.get('ARGON2_ENCODING', 'utf-8')
     )
-    register_as_extension(app, 'password_hasher', password_hasher)
+    register_as_extension(app, Extensions.PASSWORD_HASHER, password_hasher)
