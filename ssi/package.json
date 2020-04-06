@@ -1,0 +1,21 @@
+{
+  "name": "ssi",
+  "version": "1.0.0",
+  "description": "REST API to issue StreetCred VCs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Tom Farrand",
+  "license": "ISC",
+  "dependencies": {
+    "@godaddy/terminus": "^4.3.1",
+    "@streetcred.id/service-clients": "^1.1.2818",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "http": "0.0.1-security",
+    "ngrok": "^3.2.7"
+  }
+}
