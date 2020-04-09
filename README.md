@@ -2,6 +2,7 @@
 
 - `/client` - Create React App front-end for identity service
 - `/server` - Flask private identity server
+- `/ssi` - Streetcred Self Sovereign Identity service
 
 ## Running the Application
 
@@ -14,4 +15,4 @@ This will start both the client/server application, and both will reload automat
 
 ## Further Documentation
 
-See the Readmes within the `client/` and `server/` directories for more information.
+See the Readmes within the `client/`, `server/`, `/ssi` directories for more information.

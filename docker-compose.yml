@@ -25,3 +25,11 @@ services:
       POSTGRES_PASSWORD: opus_local_5432
     ports:
       - 5432:5432
+  ssi:
+    image: openmined/opus-ssi:latest
+    build: ./ssi/
+    ports:
+      - 3002:3002
+    environment:
+      PORT: 3002
+
