@@ -15,11 +15,6 @@ const client = new AgencyServiceClient(new Credentials(process.env.ACCESSTOK, pr
 var app = express();
 app.use(cors());
 app.use(parser.json());
-app.use(express.static(path.join(__dirname, 'build')))
-
-app.get('*', function (req, res) {
-    res.sendFile(path.join(__dirname, '/build/index.html'));
-});
 
 // WEBHOOK ENDPOINT
 app.post('/webhook', async function (req, res) {
@@ -62,7 +57,7 @@ app.post('/webhook', async function (req, res) {
 });
 
 //FRONTEND ENDPOINT
-app.post('/api/issue', cors(), async function (req, res) {
+app.post('/api/issue', async function (req, res) {
     const invite = await getInvite();
     const attribs = JSON.stringify(req.body);
 
@@ -70,6 +65,13 @@ app.post('/api/issue', cors(), async function (req, res) {
     res.status(200).send({ invite_url: invite.invitation });
 });
 
+app.post('/users/register', async function (req, res) {
+    const invite = await getInvite();
+    const attribs = JSON.stringify(req.body);
+
+    cache.add(invite.connectionId, attribs);
+    res.status(200).send({ invite_url: invite.invitation });
+});
 
 const getInvite = async () => {
     try {
@@ -97,6 +99,7 @@ createTerminus(server, {
 });
 
 const PORT = process.env.PORT || 3002;
+// var server = server.listen(PORT, () => console.log(`Example app listening at http://localhost:${PORT}`))
 var server = server.listen(PORT, async function () {
     const url_val = await ngrok.connect(PORT);
     console.log("============= \n\n" + url_val + "\n\n =========");

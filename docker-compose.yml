@@ -1,15 +1,18 @@
 version: "3"
 services:
   client:
+    container_name: react_client
     image: openmind/opus-client:latest
     build: ./client/
+    restart: unless-stopped
     ports:
       - 80:80
   server:
+    container_name: flask_server
     image: openmined/opus-server:latest
     build: ./server/
     volumes: ["./server:/server"]
-    restart: always
+    restart: unless-stopped
     ports:
       - 5000:5000
     depends_on:
@@ -19,17 +22,28 @@ services:
       FLASK_CONFIGURATION: development
       FRONTEND_HOST: http://localhost
       SQLALCHEMY_DATABASE_URI: postgresql://postgres:opus_local_5432@db:5432
+    # networks:
+    #   - server-ssi
   db:
+    container_name: postgres_db
     image: postgres:11.7-alpine
     environment:
       POSTGRES_PASSWORD: opus_local_5432
     ports:
       - 5432:5432
   ssi:
+    container_name: express_ssi
     image: openmined/opus-ssi:latest
     build: ./ssi/
+    restart: unless-stopped
     ports:
       - 3002:3002
     environment:
       PORT: 3002
+    # networks:
+    #   - server-ssi
+
+# networks:
+#   server-ssi:
+#     driver: bridge
 

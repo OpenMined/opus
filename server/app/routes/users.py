@@ -1,4 +1,5 @@
 from functools import wraps
+import requests
 
 from authlib.integrations.flask_oauth2 import current_token
 from flasgger.utils import swag_from
@@ -10,13 +11,15 @@ from app.models import Users
 from app.utils.permissions import encode_refresh_token, encode_access_token
 from app.utils.spec import docs_path
 
+# Connecting to the SSI container.
+SSI_ENDPOINT = 'http://ssi:3002'
+
 BASE_URL = '/users'
 USERS_LOGIN = {'rule': '/login', 'methods': ['POST'], 'endpoint': 'login'}
-USERS_REGISTER = {'rule': '/register', 'methods': ['POST'], 'endpoint': 'register'}
+USERS_REGISTER = {'rule': '/register', 'methods': ['GET', 'POST'], 'endpoint': 'register'}
 USERS_PROFILE = {'rule': '/profile', 'methods': ['GET'], 'endpoint': 'profile'}
 
 users = Blueprint(name='users', import_name=__name__, url_prefix=BASE_URL)
-
 
 @users.route(**USERS_REGISTER)
 @swag_from(
@@ -32,8 +35,16 @@ def users_register():
     password = request_data['password']
     if not password or password != request_data['passwordMatch']:
         return error_response(INCORRECT_PASSWORD)
-    user = Users.create(email=email, password=password, username=email.split('@')[0])
-    return jsonify(user.brief), SUCCESS
+
+    # At this point we call out to the SSI backend and send a POST request. 
+    # POST request is going to contain the request data so that can be used to create the VC
+    r = requests.post(SSI_ENDPOINT + '/users/register', data = {'email': email})
+    print(r.json())
+
+    # This is commented out for now
+    # user = Users.create(email=email, password=password, username=email.split('@')[0])
+    # return jsonify(user.brief), SUCCESS
+    return jsonify(r.json()), SUCCESS
 
 
 @users.route(**USERS_LOGIN)

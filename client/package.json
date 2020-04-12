@@ -15,6 +15,7 @@
     "emotion-theming": "^10.0.27",
     "lodash": "^4.17.15",
     "node-fetch": "^2.6.0",
+    "qrcode.react": "^1.0.0",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-hook-form": "^5.1.1",
@@ -28,8 +29,8 @@
     "@testing-library/user-event": "^7.1.2",
     "eslint": "^6.8.0",
     "husky": "^4.2.3",
-    "lint-staged": "^10.0.9",
-    "prettier": "^2.0.2"
+    "lint-staged": "^7.3.0",
+    "prettier": "^2.0.4"
   },
   "lint-staged": {
     "src/**/*.{js,jsx,ts,tsx,json,css,scss,md}": [
