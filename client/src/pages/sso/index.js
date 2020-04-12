@@ -6,6 +6,7 @@ import { TokenManager } from "../../storage";
 import { apiClient, triggerSideEffect } from "../../api";
 import services from "./providers";
 import { useHistory, useLocation } from "react-router-dom";
+import { PATHS } from "../../constants";
 
 export function Services({ onError }) {
   const [currentServices, setCurrentServices] = useState([]);
@@ -49,7 +50,7 @@ export function Services({ onError }) {
 
   const logout = async () => {
     TokenManager.clearTokenStorage();
-    history.replace("/");
+    history.replace(PATHS.LANDING);
   };
 
   useEffect(() => {

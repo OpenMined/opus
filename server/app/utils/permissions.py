@@ -1,4 +1,3 @@
-"""ICO service utility functions"""
 import datetime
 import uuid
 from functools import wraps
@@ -73,15 +72,31 @@ def decode_jwt(encoded_token):
 def get_jwt_identity():
     auth_header = request.headers.get('Authorization', None)
     if not auth_header:
-        return error_response(NO_TOKEN_MSG)
+        return
 
     parts = auth_header.strip().split()
     if len(parts) != 2:
-        return error_response(BAD_TOKEN_MSG)
+        return
 
     encoded_token = parts[1]
     token = decode_jwt(encoded_token)
     return token['email']
+
+
+def secure_webhook(api_method):
+    """Secure aries agent calls"""
+
+    @wraps(api_method)
+    def secure_webhook_func(*args, **kwargs):
+        auth_header = request.headers.get('x-api-key', None)
+        if not auth_header:
+            return error_response(NO_TOKEN_MSG)
+        if auth_header != current_app.config['ARIES_API_KEY']:
+            return error_response(BAD_TOKEN_MSG)
+
+        return api_method(*args, **kwargs)
+
+    return secure_webhook_func
 
 
 def with_identity(api_method):

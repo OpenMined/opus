@@ -3,7 +3,7 @@ import datetime
 from flasgger.utils import swag_from
 from flask import Blueprint, current_app, redirect, jsonify
 from sqlalchemy import and_
-from app.constants import BAD_REQUEST
+
 from app.constants import SUCCESS, Extensions
 from app.models import Users, OAuth2Token
 from app.utils.permissions import with_identity

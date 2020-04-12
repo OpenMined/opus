@@ -13,12 +13,51 @@ services:
     ports:
       - 5000:5000
     depends_on:
-      - "db"
+      - db
+      - aries-agent
     environment:
       PORT: 5000
+      ARIES_AGENT_URL: "http://aries-agent:5001"
       FLASK_CONFIGURATION: development
       FRONTEND_HOST: http://localhost
       SQLALCHEMY_DATABASE_URI: postgresql://postgres:opus_local_5432@db:5432
+
+  aries-agent:
+    image: bcgovimages/aries-cloudagent:py36-1.14-1_0.4.5
+    network_mode: host
+    environment:
+      ADMIN_PORT: 5001
+      AGENT_PORT: 10001
+      INDY_SEED: opus-agentbR/peFD/AuaJyycqYFc473
+      SITE_URL: http://localhost:5000
+      AGENT_API_KEY: 123
+      WEBHOOK_URL: http://opus-server:5000/webhooks/agent
+      AGENT_LABEL: Aries SSI distributor
+    ports:
+      - 5001:5001
+      - 10001:10001
+    volumes:
+      - ./aca-py:/home/indy/.indy_client/wallet
+    entrypoint: /bin/bash
+    command: [
+      "-c",
+      "curl -d '{\"seed\":\"${AGENT_WALLET_SEED}\", \"role\":\"TRUST_ANCHOR\", \"alias\":\"Aries SSI distributor (Docker)\"}' -X POST http://test.bcovrin.vonx.io/register; \
+        sleep 5; \
+        aca-py start \
+        -it http '0.0.0.0' 10001 \
+        -ot http \
+        --admin '0.0.0.0' 5001 \
+        -e $SITE_URL \
+        --wallet-type indy \
+        --seed $AGENT_WALLET_SEED \
+        --genesis-url http://test.bcovrin.vonx.io/genesis \
+        --label 'Aries SSI distributor' \
+        --auto-accept-invites \
+        --auto-accept-requests \
+        --admin-api-key $AGENT_API_KEY \
+        --log-level info",
+    ]
+
   db:
     image: postgres:11.7-alpine
     environment:
