@@ -16,7 +16,7 @@ SSI_ENDPOINT = 'http://ssi:3002'
 
 BASE_URL = '/users'
 USERS_LOGIN = {'rule': '/login', 'methods': ['POST'], 'endpoint': 'login'}
-USERS_REGISTER = {'rule': '/register', 'methods': ['GET', 'POST'], 'endpoint': 'register'}
+USERS_REGISTER = {'rule': '/register', 'methods': ['POST'], 'endpoint': 'register'}
 USERS_PROFILE = {'rule': '/profile', 'methods': ['GET'], 'endpoint': 'profile'}
 
 users = Blueprint(name='users', import_name=__name__, url_prefix=BASE_URL)
@@ -38,12 +38,12 @@ def users_register():
 
     # At this point we call out to the SSI backend and send a POST request. 
     # POST request is going to contain the request data so that can be used to create the VC
-    r = requests.post(SSI_ENDPOINT + '/users/register', data = {'email': email})
+    r = requests.post(SSI_ENDPOINT + '/users/register', json={'email': email, 'password': password})
     print(r.json())
 
-    # This is commented out for now
+    # Make sure we create the user in the db
+    # NOTE: Password should be hashed.
     # user = Users.create(email=email, password=password, username=email.split('@')[0])
-    # return jsonify(user.brief), SUCCESS
     return jsonify(r.json()), SUCCESS
 
 

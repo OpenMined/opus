@@ -23,32 +23,22 @@ app.post('/webhook', async function (req, res) {
         if (req.body.message_type === 'new_connection') {
                     console.log("new connection notif");
 
+            var credentialValues = JSON.parse(cache.get("userRegistrationBody"));
+            console.log(credentialValues);
             var params =
             {
                 credentialOfferParameters: {
                     definitionId: process.env.CRED_DEF_ID,
-                    connectionId: req.body.object_id
-                }
-            }
-            await client.createCredential(params);
-        }
-        else if (req.body.message_type === 'credential_request') {
-                                console.log("cred request notif");
-
-            const attribs = cache.get(req.body.data.ConnectionId)
-            if (attribs) {
-                var param_obj = JSON.parse(attribs);
-                const params = {
-                    values: {
-                        "Full Name": param_obj["name"],
-                        "Title": param_obj["title"],
-                        "Company Name": param_obj["org"],
-                        "Phone Number": param_obj["phone"],
-                        "Email": param_obj["email"]
+                    connectionId: cache.get("connectionId"),
+                    automaticIssuance: true,
+                    credentialValues: {
+                        email: credentialValues.email,
+                        password: credentialValues.password,
                     }
                 }
-                await client.issueCredential(req.body.object_id, params);
             }
+            console.log(params);
+            await client.createCredential(params);
         }
     }
     catch (e) {
@@ -56,20 +46,13 @@ app.post('/webhook', async function (req, res) {
     }
 });
 
-//FRONTEND ENDPOINT
-app.post('/api/issue', async function (req, res) {
-    const invite = await getInvite();
-    const attribs = JSON.stringify(req.body);
-
-    cache.add(invite.connectionId, attribs);
-    res.status(200).send({ invite_url: invite.invitation });
-});
-
 app.post('/users/register', async function (req, res) {
-    const invite = await getInvite();
-    const attribs = JSON.stringify(req.body);
+    // Add data attributes to the cache so they can be retrieved later.
+    cache.add("userRegistrationBody", JSON.stringify(req.body));
+    console.log(cache);
 
-    cache.add(invite.connectionId, attribs);
+    const invite = await getInvite();
+    cache.add("connectionId", invite.connectionId);
     res.status(200).send({ invite_url: invite.invitation });
 });
 
@@ -99,7 +82,6 @@ createTerminus(server, {
 });
 
 const PORT = process.env.PORT || 3002;
-// var server = server.listen(PORT, () => console.log(`Example app listening at http://localhost:${PORT}`))
 var server = server.listen(PORT, async function () {
     const url_val = await ngrok.connect(PORT);
     console.log("============= \n\n" + url_val + "\n\n =========");

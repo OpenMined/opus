@@ -22,8 +22,6 @@ services:
       FLASK_CONFIGURATION: development
       FRONTEND_HOST: http://localhost
       SQLALCHEMY_DATABASE_URI: postgresql://postgres:opus_local_5432@db:5432
-    # networks:
-    #   - server-ssi
   db:
     container_name: postgres_db
     image: postgres:11.7-alpine
@@ -40,10 +38,4 @@ services:
       - 3002:3002
     environment:
       PORT: 3002
-    # networks:
-    #   - server-ssi
-
-# networks:
-#   server-ssi:
-#     driver: bridge
 
