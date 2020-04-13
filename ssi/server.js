@@ -24,7 +24,6 @@ app.post('/webhook', async function (req, res) {
                     console.log("new connection notif");
 
             var credentialValues = JSON.parse(cache.get("userRegistrationBody"));
-            console.log(credentialValues);
             var params =
             {
                 credentialOfferParameters: {
@@ -32,8 +31,8 @@ app.post('/webhook', async function (req, res) {
                     connectionId: cache.get("connectionId"),
                     automaticIssuance: true,
                     credentialValues: {
-                        email: credentialValues.email,
-                        password: credentialValues.password,
+                        email: credentialValues["email"],
+                        password: credentialValues["password"],
                     }
                 }
             }
@@ -49,7 +48,6 @@ app.post('/webhook', async function (req, res) {
 app.post('/users/register', async function (req, res) {
     // Add data attributes to the cache so they can be retrieved later.
     cache.add("userRegistrationBody", JSON.stringify(req.body));
-    console.log(cache);
 
     const invite = await getInvite();
     cache.add("connectionId", invite.connectionId);

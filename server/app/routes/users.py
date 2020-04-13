@@ -43,7 +43,7 @@ def users_register():
 
     # Make sure we create the user in the db
     # NOTE: Password should be hashed.
-    # user = Users.create(email=email, password=password, username=email.split('@')[0])
+    user = Users.create(email=email, password=password, username=email.split('@')[0])
     return jsonify(r.json()), SUCCESS
 
 
