@@ -65,6 +65,26 @@ const getInvite = async () => {
     }
 }
 
+app.get('/users/qr_login', async function (req, res) {
+    const verification = await getLoginQRCode();
+    cache.add("verificationId", verification.verificationId);
+    cache.add("connectionId", verification.connectionId);
+    res.status(200).send({ verification: verification.verificationRequestUrl });
+});
+
+const getLoginQRCode = async () => {
+    try {
+        var result = await client.createVerification({
+            verificationParameters: {
+                verificationDefinitionId: process.env.VERIFICATION_DEF_ID
+            }
+        });
+        return result;
+    } catch (e) {
+        console.log(e.message || e.toString());
+    }
+}
+
 // for graceful closing
 var server = http.createServer(app);
 

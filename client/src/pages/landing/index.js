@@ -10,10 +10,12 @@ import SignupForm from "./SignupForm";
 import LoginForm from "./LoginForm";
 
 export function Landing({ onError }) {
-  const [inviteURL, setInviteURL] = useState();
+  const [registrationURL, setRegistrationURL] = useState();
+  const [loginURL, setLoginURL] = useState();
   const signupDisclosure = useDisclosure();
   const loginDisclosure = useDisclosure();
-  const QRDisclosure = useDisclosure();
+  const signupQRDisclosure = useDisclosure();
+  const loginQRDisclosure = useDisclosure();
   let history = useHistory();
   let location = useLocation();
   let { from } = location.state || { from: { pathname: "/services" } };
@@ -23,9 +25,9 @@ export function Landing({ onError }) {
       apiCall: () => apiClient.register(values),
       onError,
       onSuccess: async (responseData) => {
-        setInviteURL("https://web.cloud.streetcred.id/link/?c_i=" + responseData["invite_url"]);
+        setRegistrationURL("https://web.cloud.streetcred.id/link/?c_i=" + responseData["invite_url"]);
         signupDisclosure.onClose();
-        QRDisclosure.onOpen();
+        signupQRDisclosure.onOpen();
       },
     });
   };
@@ -41,6 +43,17 @@ export function Landing({ onError }) {
       },
     });
 
+    const generateLoginURL = async () => {
+      triggerSideEffect({
+        apiCall: () => apiClient.generateLoginURL(),
+        onError,
+        onSuccess: async (responseData) => {
+          setLoginURL("https://web.cloud.streetcred.id/link/?c_i=" + responseData["invite_url"]);
+          loginQRDisclosure.onOpen();
+        },
+      });
+    };
+
   return (
     <>
       <Box mx="auto" width={["100%", 200]} py={6}>
@@ -51,6 +64,9 @@ export function Landing({ onError }) {
           <Button variantColor="blue" onClick={loginDisclosure.onOpen}>
             Login
           </Button>
+          <Button variantColor="blue" onClick={generateLoginURL}>
+            QR Code Login
+          </Button>
         </Stack>
       </Box>
       <Modal {...signupDisclosure} title="Signup">
@@ -59,8 +75,11 @@ export function Landing({ onError }) {
       <Modal {...loginDisclosure} title="Login">
         <LoginForm onSubmit={login} />
       </Modal>
-      <Modal {...QRDisclosure} title="Scan Me!">
-          <QRcode size="200" value={inviteURL} style={{margin: "0 auto", padding: "10px"}} />
+      <Modal {...signupQRDisclosure} title="Scan Me!">
+          <QRcode size="200" value={registrationURL} style={{margin: "0 auto", padding: "10px"}} />
+      </Modal>
+      <Modal {...loginQRDisclosure}>
+        <QRcode size="200" value={loginURL} style={{margin: "0 auto", padding: "10px"}} />
       </Modal>
     </>
   );

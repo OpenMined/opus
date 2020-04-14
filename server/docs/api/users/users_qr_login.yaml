@@ -1,0 +1,32 @@
+tags:
+    - 'users'
+  summary: User QR login endpoint
+  consumes:
+    - application/json
+  parameters:
+    - in: body
+      name: user
+      description: The user to create.
+      schema:
+        type: object
+        required:
+          - username
+          - password
+        properties:
+          username:
+            type: string
+          password:
+            type: string
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: '#/definitions/User'
+    '400':
+      description: Access Denied
+      content:
+        application/json:
+          schema:
+            $ref: '#/definitions/Error'

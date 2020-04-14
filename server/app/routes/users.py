@@ -16,6 +16,7 @@ SSI_ENDPOINT = 'http://ssi:3002'
 
 BASE_URL = '/users'
 USERS_LOGIN = {'rule': '/login', 'methods': ['POST'], 'endpoint': 'login'}
+USERS_QR_LOGIN = {'rule': '/qr_login', 'methods': ['GET'], 'endpoint': 'qr_login'}
 USERS_REGISTER = {'rule': '/register', 'methods': ['POST'], 'endpoint': 'register'}
 USERS_PROFILE = {'rule': '/profile', 'methods': ['GET'], 'endpoint': 'profile'}
 
@@ -64,6 +65,16 @@ def users_login():
         'refresh_token': encode_refresh_token(request_data['email'])
     }), SUCCESS
 
+
+@users.route(**USERS_QR_LOGIN)
+@swag_from(
+    docs_path('api', 'users', 'users_qr_login.yaml'), methods=['GET'], endpoint='users.qr_login'
+)
+def users_qr_login():
+    r = requests.get(SSI_ENDPOINT + '/users/qr_login')
+    print(r.json())
+    return jsonify(r.json()), SUCCESS
+    
 
 def require_oauth(scope):
     def wrapper(f):
