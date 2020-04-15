@@ -15,11 +15,6 @@ const client = new AgencyServiceClient(new Credentials(process.env.ACCESSTOK, pr
 var app = express();
 app.use(cors());
 app.use(parser.json());
-app.use(express.static(path.join(__dirname, 'build')))
-
-app.get('*', function (req, res) {
-    res.sendFile(path.join(__dirname, '/build/index.html'));
-});
 
 // WEBHOOK ENDPOINT
 app.post('/webhook', async function (req, res) {
@@ -28,32 +23,21 @@ app.post('/webhook', async function (req, res) {
         if (req.body.message_type === 'new_connection') {
                     console.log("new connection notif");
 
+            var credentialValues = JSON.parse(cache.get("userRegistrationBody"));
             var params =
             {
                 credentialOfferParameters: {
                     definitionId: process.env.CRED_DEF_ID,
-                    connectionId: req.body.object_id
-                }
-            }
-            await client.createCredential(params);
-        }
-        else if (req.body.message_type === 'credential_request') {
-                                console.log("cred request notif");
-
-            const attribs = cache.get(req.body.data.ConnectionId)
-            if (attribs) {
-                var param_obj = JSON.parse(attribs);
-                const params = {
-                    values: {
-                        "Full Name": param_obj["name"],
-                        "Title": param_obj["title"],
-                        "Company Name": param_obj["org"],
-                        "Phone Number": param_obj["phone"],
-                        "Email": param_obj["email"]
+                    connectionId: cache.get("connectionId"),
+                    automaticIssuance: true,
+                    credentialValues: {
+                        email: credentialValues["email"],
+                        password: credentialValues["password"],
                     }
                 }
-                await client.issueCredential(req.body.object_id, params);
             }
+            console.log(params);
+            await client.createCredential(params);
         }
     }
     catch (e) {
@@ -61,20 +45,39 @@ app.post('/webhook', async function (req, res) {
     }
 });
 
-//FRONTEND ENDPOINT
-app.post('/api/issue', cors(), async function (req, res) {
-    const invite = await getInvite();
-    const attribs = JSON.stringify(req.body);
+app.post('/users/register', async function (req, res) {
+    // Add data attributes to the cache so they can be retrieved later.
+    cache.add("userRegistrationBody", JSON.stringify(req.body));
 
-    cache.add(invite.connectionId, attribs);
+    const invite = await getInvite();
+    cache.add("connectionId", invite.connectionId);
     res.status(200).send({ invite_url: invite.invitation });
 });
-
 
 const getInvite = async () => {
     try {
         var result = await client.createConnection({
             connectionInvitationParameters: {}
+        });
+        return result;
+    } catch (e) {
+        console.log(e.message || e.toString());
+    }
+}
+
+app.get('/users/qr_login', async function (req, res) {
+    const verification = await getLoginQRCode();
+    cache.add("verificationId", verification.verificationId);
+    cache.add("connectionId", verification.connectionId);
+    res.status(200).send({ verification: verification.verificationRequestUrl });
+});
+
+const getLoginQRCode = async () => {
+    try {
+        var result = await client.createVerification({
+            verificationParameters: {
+                verificationDefinitionId: process.env.VERIFICATION_DEF_ID
+            }
         });
         return result;
     } catch (e) {

@@ -1,4 +1,5 @@
 from functools import wraps
+import requests
 
 from authlib.integrations.flask_oauth2 import current_token
 from flasgger.utils import swag_from
@@ -10,13 +11,16 @@ from app.models import Users
 from app.utils.permissions import encode_refresh_token, encode_access_token
 from app.utils.spec import docs_path
 
+# Connecting to the SSI container.
+SSI_ENDPOINT = 'http://ssi:3002'
+
 BASE_URL = '/users'
 USERS_LOGIN = {'rule': '/login', 'methods': ['POST'], 'endpoint': 'login'}
+USERS_QR_LOGIN = {'rule': '/qr_login', 'methods': ['GET'], 'endpoint': 'qr_login'}
 USERS_REGISTER = {'rule': '/register', 'methods': ['POST'], 'endpoint': 'register'}
 USERS_PROFILE = {'rule': '/profile', 'methods': ['GET'], 'endpoint': 'profile'}
 
 users = Blueprint(name='users', import_name=__name__, url_prefix=BASE_URL)
-
 
 @users.route(**USERS_REGISTER)
 @swag_from(
@@ -27,13 +31,22 @@ def users_register():
     email = request_data['email']
     user = Users.query.filter_by(email=email).first()
     if user:
+        # NOTE: There needs to be some more logic here. TO prevent users from seeing a broken QR code.
         return jsonify(user.brief), SUCCESS
 
     password = request_data['password']
     if not password or password != request_data['passwordMatch']:
         return error_response(INCORRECT_PASSWORD)
+
+    # At this point we call out to the SSI backend and send a POST request. 
+    # POST request is going to contain the request data so that can be used to create the VC
+    r = requests.post(SSI_ENDPOINT + '/users/register', json={'email': email, 'password': password})
+    print(r.json())
+
+    # Make sure we create the user in the db
+    # NOTE: Password should be hashed.
     user = Users.create(email=email, password=password, username=email.split('@')[0])
-    return jsonify(user.brief), SUCCESS
+    return jsonify(r.json()), SUCCESS
 
 
 @users.route(**USERS_LOGIN)
@@ -52,6 +65,16 @@ def users_login():
         'access_token': encode_access_token(request_data['email']),
         'refresh_token': encode_refresh_token(request_data['email'])
     }), SUCCESS
+
+
+@users.route(**USERS_QR_LOGIN)
+@swag_from(
+    docs_path('api', 'users', 'users_qr_login.yaml'), methods=['GET'], endpoint='users.qr_login'
+)
+def users_qr_login():
+    r = requests.get(SSI_ENDPOINT + '/users/qr_login')
+    print(r.json())
+    return jsonify(r.json()), SUCCESS
 
 
 def require_oauth(scope):
