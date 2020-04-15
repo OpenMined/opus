@@ -6,9 +6,7 @@
 
 ## Running the Application
 
-1. You will need a `.env` file in your `ssi` directory (`/ssi/.env`). This provides your Streetcred credentials to the `ssi` service. Your `.env` file will follow the same format as show in this demo [here](https://github.com/streetcred-id/iiw-demo).
-
-The `.env` file should be laid out as such:
+1. You will need a `.env` file in your `ssi` directory (`/ssi/.env`). This provides your Streetcred credentials to the `ssi` service. Your `.env` file will follow the same format as show in this demo [here](https://github.com/streetcred-id/iiw-demo). The `.env` file should be laid out as such:
 ```
 # Developer Credentials #
 ACCESSTOK = '< Your Access Token Here >'
