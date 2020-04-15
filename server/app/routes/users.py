@@ -31,6 +31,7 @@ def users_register():
     email = request_data['email']
     user = Users.query.filter_by(email=email).first()
     if user:
+        # NOTE: There needs to be some more logic here. TO prevent users from seeing a broken QR code.
         return jsonify(user.brief), SUCCESS
 
     password = request_data['password']
@@ -74,7 +75,7 @@ def users_qr_login():
     r = requests.get(SSI_ENDPOINT + '/users/qr_login')
     print(r.json())
     return jsonify(r.json()), SUCCESS
-    
+
 
 def require_oauth(scope):
     def wrapper(f):
