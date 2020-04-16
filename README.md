@@ -13,10 +13,10 @@ ACCESSTOK = '< Your Access Token Here >'
 SUBKEY = '< Your Subscription Key Here >'
 
 # Credential Definition #
-CRED_DEF_ID = 'PLaot51DVtaGBZQoJPMdiY:3:CL:88937:test'
+CRED_DEF_ID = '< Your Credential Definition Here >'
 
 # Verification Definition #
-VERIFICATION_DEF_ID = 'b1d01c3a-1035-496f-261e-08d7de69f4ca'
+VERIFICATION_DEF_ID = '< Your Verification Definition Here>'
 ```
 
 2. To generate your own developer credentials you will have to create an organisation on the Streetcred developer portal. This will provide you with an Access Token and Subscription Key which you can add to your `.env` file. More detailed instructions can be found [here](https://github.com/streetcred-id/iiw-demo).
