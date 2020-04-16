@@ -39,3 +39,9 @@ NOTE: If you get a 504 Gateway Timeout error, go to the GET /definitions/credent
 3. Make sure you have `docker` installed on your system. Next, run `docker-compose build`. Currently if you change any of the React front end code, of the SSI Express logic then you will have to re-run the `docker-compose build` step. I am looking at fixing this in the future so there is hot reloading. 
 
 4. run `docker-compose up`. This will start all three containers (client/server/ssi). The front end will be accessible at `http://localhost:80`.
+
+## Using SSI
+
+Currently, the SSI feature is very new and only supports the registration of new users. Upon registering for an account users will have a QR code displayed to them, upon scanning this QR code they will be issued with a Verifiable Credential which displays their email and password. 
+
+Once the application is up and running, all you need to do is navigate to the front end (`http://localhost:80`) and register with a dummy email account (NOTE: once you have registered with an email account it will be added to the locally running Postgre database and unless you wipe this DB session you will not be able to use that email address again). This will then display the QR code, which should be scanned with your Streetcred wallet app. 
