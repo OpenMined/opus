@@ -11,6 +11,7 @@ INCORRECT_PASSWORD = 'password_not_matching'
 USER_NOT_FOUND_MSG = 'user_not_found'
 INVALID_CREDENTIAL_MSG = 'invalid_credentials'
 SERVER_ERROR_MSG = 'server_error'
+ALREADY_REGISTERED = 'already_registered'
 MESSAGES = {
     NO_TOKEN_MSG: {
         "message": {MESSAGE_KEY: "Missing Authorization Header"},
@@ -43,6 +44,10 @@ MESSAGES = {
     SERVER_ERROR_MSG: {
         "message": {MESSAGE_KEY: "Something went wrong. Please try again later"},
         "status_code": INTERNAL_SERVER_ERROR,
+    },
+    ALREADY_REGISTERED: {
+        "message": {MESSAGE_KEY: "An account has already been registered against that username."},
+        "status_code": BAD_REQUEST,
     }
 }
 

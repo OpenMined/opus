@@ -6,7 +6,7 @@ from flasgger.utils import swag_from
 from flask import Blueprint, jsonify, current_app, request
 
 from app.constants import SUCCESS, Extensions
-from app.errors.messages import error_response, INCORRECT_PASSWORD, USER_NOT_FOUND_MSG, INVALID_CREDENTIAL_MSG
+from app.errors.messages import error_response, INCORRECT_PASSWORD, USER_NOT_FOUND_MSG, INVALID_CREDENTIAL_MSG, ALREADY_REGISTERED
 from app.models import Users
 from app.utils.permissions import encode_refresh_token, encode_access_token
 from app.utils.spec import docs_path
@@ -32,7 +32,7 @@ def users_register():
     user = Users.query.filter_by(email=email).first()
     if user:
         # NOTE: There needs to be some more logic here. TO prevent users from seeing a broken QR code.
-        return jsonify(user.brief), SUCCESS
+        return error_response(ALREADY_REGISTERED)
 
     password = request_data['password']
     if not password or password != request_data['passwordMatch']:
@@ -41,10 +41,7 @@ def users_register():
     # At this point we call out to the SSI backend and send a POST request. 
     # POST request is going to contain the request data so that can be used to create the VC
     r = requests.post(SSI_ENDPOINT + '/users/register', json={'email': email, 'password': password})
-    print(r.json())
 
-    # Make sure we create the user in the db
-    # NOTE: Password should be hashed.
     user = Users.create(email=email, password=password, username=email.split('@')[0])
     return jsonify(r.json()), SUCCESS
 
