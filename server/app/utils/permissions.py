@@ -5,7 +5,8 @@ from functools import wraps
 import jwt
 from flask import current_app, request
 
-from app.errors.messages import error_response, NO_TOKEN_MSG, BAD_TOKEN_MSG
+from app.errors.handlers import error_response
+from app.errors.messages import BAD_TOKEN_MSG
 
 
 def _encode_jwt(additional_token_data, expires_delta):
@@ -83,20 +84,20 @@ def get_jwt_identity():
     return token['email']
 
 
-def secure_webhook(api_method):
-    """Secure aries agent calls"""
-
-    @wraps(api_method)
-    def secure_webhook_func(*args, **kwargs):
-        auth_header = request.headers.get('x-api-key', None)
-        if not auth_header:
-            return error_response(NO_TOKEN_MSG)
-        if auth_header != current_app.config['ARIES_API_KEY']:
-            return error_response(BAD_TOKEN_MSG)
-
-        return api_method(*args, **kwargs)
-
-    return secure_webhook_func
+# def secure_webhook(api_method):
+#     """Secure aries agent calls"""
+#
+#     @wraps(api_method)
+#     def secure_webhook_func(*args, **kwargs):
+#         auth_header = request.headers.get('x-api-key', None)
+#         if not auth_header:
+#             return error_response(NO_TOKEN_MSG)
+#         if auth_header != current_app.config['ARIES_API_KEY']:
+#             return error_response(BAD_TOKEN_MSG)
+#
+#         return api_method(*args, **kwargs)
+#
+#     return secure_webhook_func
 
 
 def with_identity(api_method):

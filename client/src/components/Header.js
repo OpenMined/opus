@@ -17,6 +17,7 @@ import {
 import { PATHS } from "../constants";
 import { useHistory } from "react-router-dom";
 import { TokenManager } from "../storage";
+import { MdMenu } from "react-icons/md";
 
 export const Header = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -34,7 +35,7 @@ export const Header = (props) => {
       justify="space-between"
       wrap="wrap"
       padding="1.5rem"
-      bg="teal.500"
+      bg="blue.500"
       color="white"
       {...props}
     >
@@ -44,12 +45,13 @@ export const Header = (props) => {
         </Heading>
       </Flex>
 
-      <Box display={{ sm: "block", md: "none" }} onClick={onOpen}>
-        <svg fill="white" width="20px" viewBox="0 0 20 20">
-          <title>Menu</title>
-          <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z" />
-        </svg>
-      </Box>
+      {TokenManager.isAuthenticated() ? (
+        <Flex align="right" mr={5}>
+          <Box onClick={onOpen} as={MdMenu} size="32px" />
+        </Flex>
+      ) : (
+        ""
+      )}
 
       <Drawer
         isOpen={isOpen}
@@ -78,7 +80,7 @@ export const Header = (props) => {
             </Stack>
           </DrawerBody>
           <DrawerFooter>
-            <Button variant="outline" mr={6} onClick={logout}>
+            <Button onClick={logout} variantColor="blue">
               Logout
             </Button>
           </DrawerFooter>

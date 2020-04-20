@@ -6,8 +6,18 @@ from flask import current_app
 from app.services.ssi import get_credential_definition_id
 
 
+def base_post(url, body=None):
+    params = {
+        'url': url,
+        'headers': {'x-api-key': str(current_app.config['AGENT_API_KEY'])}
+    }
+    if body:
+        params['json'] = body
+    return requests.post(**params)
+
+
 def creat_invitation():
-    response = requests.post(f"{current_app.config['ARIES_AGENT_URL']}/connections/create-invitation")
+    response = base_post(f"{current_app.config['ARIES_AGENT_URL']}/connections/create-invitation")
     return response.json()
 
 
@@ -20,14 +30,14 @@ def get_schema(attributes=None):
         "schema_version": "1.2.2",
         "attributes": attributes,
     }
-    response = requests.post(f"{current_app.config['ARIES_AGENT_URL']}/schemas", json=schema_body)
+    response = base_post(f"{current_app.config['ARIES_AGENT_URL']}/schemas", schema_body)
     return response.json()
 
 
 def send_credentials_offer(message):
-    return requests.post(
+    return base_post(
         f"{current_app.config['ARIES_AGENT_URL']}/issue-credential/send-offer",
-        json={
+        {
             "auto_issue": False,
             "connection_id": message["connection_id"],
             "cred_def_id": get_credential_definition_id(),
@@ -36,9 +46,9 @@ def send_credentials_offer(message):
 
 
 def issue_credentials(credential_exchange_id, email):
-    return requests.post(
+    response = base_post(
         f"{current_app.config['ARIES_AGENT_URL']}/issue-credential/records/{credential_exchange_id}/issue",
-        json={
+        {
             "credential_preview": {
                 "attributes": [
                     {
@@ -55,10 +65,12 @@ def issue_credentials(credential_exchange_id, email):
             }
         },
     )
+    return response.json()
 
 
 def create_credentials(schema_id):
-    response = requests.post(
-        f"{current_app.config['ARIES_AGENT_URL']}/credential-definitions", json={"schema_id": schema_id}
+    response = base_post(
+        f"{current_app.config['ARIES_AGENT_URL']}/credential-definitions",
+        {"schema_id": schema_id}
     )
     return response.json()

@@ -6,7 +6,6 @@ import { Services } from "./pages/sso";
 import { Landing } from "./pages/landing";
 import { PATHS } from "./constants";
 import { Identity } from "./pages/ssi";
-import DrawerMenu from "./components/Drawer";
 import Header from "./components/Header";
 
 export default () => {
@@ -26,7 +25,13 @@ export default () => {
   return (
     <Router>
       <Header />
-      <Box mx="auto" width={["100%", null, 720, 960, 1200]} px={3} pb={6}>
+      <Box
+        mx="auto"
+        width={["100%", null, 720, 960, 1200]}
+        px={3}
+        pb={6}
+        pt={10}
+      >
         <Switch>
           <ProtectedRoute path={PATHS.SERVICES}>
             <Services onError={onError} />

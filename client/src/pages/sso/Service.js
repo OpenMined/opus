@@ -1,5 +1,5 @@
 import React from "react";
-import { Heading, Image, Text, Button, Flex } from "@chakra-ui/core";
+import { Button, Flex, Heading, Image, Text } from "@chakra-ui/core";
 
 export default ({
   name,

@@ -1,10 +1,9 @@
-from flask import jsonify
-
 from app.constants import UNAUTHORIZED, FORBIDDEN, BAD_REQUEST, INTERNAL_SERVER_ERROR, NOT_FOUND
 
 MESSAGE_KEY = 'message'
 BAD_PERMISSIONS_MSG = 'bad_permissions'
 BAD_REQUEST_MSG = 'bad_request'
+NOT_FOUND_MSG = 'not_found'
 NO_TOKEN_MSG = 'no_token'
 BAD_TOKEN_MSG = 'bad_token'
 INCORRECT_PASSWORD = 'password_not_matching'
@@ -32,6 +31,10 @@ MESSAGES = {
         "message": {MESSAGE_KEY: "Incorrect password"},
         "status_code": BAD_REQUEST,
     },
+    NOT_FOUND_MSG: {
+        "message": {MESSAGE_KEY: "Object not found"},
+        "status_code": NOT_FOUND,
+    },
     USER_NOT_FOUND_MSG: {
         "message": {MESSAGE_KEY: "User not found"},
         "status_code": NOT_FOUND,
@@ -45,15 +48,3 @@ MESSAGES = {
         "status_code": INTERNAL_SERVER_ERROR,
     }
 }
-
-
-def error_response(message_type, message=None):
-    """
-    Formats the error message and send the correct error code
-    :param message_type: the message type for the particular error
-    :param message: optional custom message for the given error type
-    :return: json response, status code
-    """
-    response_message = dict(MESSAGES[message_type]['message']) if not message else {MESSAGE_KEY: message}
-    status_code = MESSAGES[message_type]['status_code']
-    return jsonify(response_message), status_code

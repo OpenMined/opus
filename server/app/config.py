@@ -31,6 +31,7 @@ class DevelopmentConfig(Config):
                 'SQLALCHEMY_DATABASE_URI',
                 'postgresql://postgres:opus_local_5432@localhost:5432'
             ),
+            'AGENT_API_KEY': os.getenv('AGENT_API_KEY', 123),
             'SQLALCHEMY_TRACK_MODIFICATIONS': os.getenv('SQLALCHEMY_TRACK_MODIFICATIONS', True),
             'DEBUG': True,
             'SQLALCHEMY_ECHO': True,

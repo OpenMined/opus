@@ -44,14 +44,6 @@ class CRUDMixin(object):
     id = db.Column(GUID, primary_key=True, nullable=False, default=lambda: str(uuid4()))
 
     @classmethod
-    def get_or_create(cls, **kwargs):
-        instance = cls.query.find_by(**kwargs).first()
-        if instance:
-            instance.update(**kwargs)
-            return instance
-        return cls.create(kwargs)
-
-    @classmethod
     def create(cls, **kwargs):
         instance = cls(**kwargs)
         return instance.save()
