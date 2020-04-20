@@ -28,7 +28,7 @@ services:
     environment:
       - ADMIN_PORT=5001
       - AGENT_PORT=10001
-      - SITE_URL=http://9806332e.ngrok.io
+      - SITE_URL=${SITE_URL}
       - AGENT_API_KEY=123
       - WEBHOOK_URL=http://localhost:5000/webhooks/agent
       - AGENT_LABEL=Aries SSI distributor
