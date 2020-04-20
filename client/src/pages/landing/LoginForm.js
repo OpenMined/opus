@@ -1,11 +1,11 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import {
+  Button,
+  FormControl,
   FormErrorMessage,
   FormLabel,
-  FormControl,
   Input,
-  Button,
 } from "@chakra-ui/core";
 
 export default ({ onSubmit }) => {

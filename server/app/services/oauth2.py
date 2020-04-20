@@ -1,4 +1,3 @@
-from app.models import Users, OAuth2AuthorizationCode
 from authlib.oauth2.rfc6749.grants import (
     AuthorizationCodeGrant as _AuthorizationCodeGrant,
 )
@@ -10,6 +9,8 @@ from authlib.oidc.core.grants import (
 )
 from flask import current_app
 from werkzeug.security import gen_salt
+
+from app.models import Users, OAuth2AuthorizationCode
 
 
 def exists_nonce(nonce, req):

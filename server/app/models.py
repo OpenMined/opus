@@ -18,6 +18,7 @@ class Users(CRUDMixin, db.Model):
     oauth2_client = db.relationship("OAuth2Client", uselist=True, back_populates="users", cascade=CASCADE)
     oauth2_code = db.relationship("OAuth2AuthorizationCode", uselist=True, back_populates="users", cascade=CASCADE)
     oauth2_token = db.relationship("OAuth2Token", uselist=True, back_populates="users", cascade=CASCADE)
+    session_state = db.relationship("SessionState", uselist=True, back_populates="users", cascade=CASCADE)
 
     # required by authlib/integrations/sqla_oauth2/functions.py
     def get_user_id(self):
@@ -64,3 +65,14 @@ class OAuth2Token(CRUDMixin, db.Model, OAuth2TokenMixin):
 
     user_id = db.Column('user_id', GUID(), db.ForeignKey('users.id', name="oauth2_token_user_id_fkey"), nullable=False)
     users = db.relationship("Users", uselist=False, back_populates="oauth2_token", cascade=KEEP_PARENTS)
+
+
+class SessionState(CRUDMixin, db.Model):
+    __tablename__ = 'session_state'
+
+    invite_url = db.Column(db.String(2000))
+    connection_id = db.Column('connection_id', GUID(), nullable=False)
+    state = db.Column(db.String(255))
+
+    user_id = db.Column('user_id', GUID(), db.ForeignKey('users.id', name="session_state_user_id_fkey"), nullable=False)
+    users = db.relationship("Users", uselist=False, back_populates="session_state", cascade=KEEP_PARENTS)

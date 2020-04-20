@@ -15,3 +15,7 @@ flasgger
 flask-marshmallow
 marshmallow
 marshmallow-sqlalchemy
+
+# Aries
+qrcode
+Pillow

@@ -1,9 +1,10 @@
-from app.constants import Extensions
-from app.models import Users
-from app.utils.spec import docs_path
 from authlib.oauth2 import OAuth2Error
 from flasgger.utils import swag_from
 from flask import Blueprint, request, session, current_app, jsonify, render_template
+
+from app.constants import Extensions
+from app.models import Users
+from app.utils.spec import docs_path
 
 BASE_URL = '/oauth'
 OAUTH_AUTHORIZE = {'rule': '/authorize', 'methods': ['POST', 'GET'], 'endpoint': 'authorize'}

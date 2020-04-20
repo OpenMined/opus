@@ -1,4 +1,3 @@
-"""ICO service utility functions"""
 import datetime
 import uuid
 from functools import wraps
@@ -6,7 +5,8 @@ from functools import wraps
 import jwt
 from flask import current_app, request
 
-from app.errors.messages import error_response, NO_TOKEN_MSG, BAD_TOKEN_MSG
+from app.errors.handlers import error_response
+from app.errors.messages import BAD_TOKEN_MSG
 
 
 def _encode_jwt(additional_token_data, expires_delta):
@@ -73,11 +73,11 @@ def decode_jwt(encoded_token):
 def get_jwt_identity():
     auth_header = request.headers.get('Authorization', None)
     if not auth_header:
-        return error_response(NO_TOKEN_MSG)
+        return
 
     parts = auth_header.strip().split()
     if len(parts) != 2:
-        return error_response(BAD_TOKEN_MSG)
+        return
 
     encoded_token = parts[1]
     token = decode_jwt(encoded_token)

@@ -5,7 +5,8 @@ from flasgger.utils import swag_from
 from flask import Blueprint, jsonify, current_app, request
 
 from app.constants import SUCCESS, Extensions
-from app.errors.messages import error_response, INCORRECT_PASSWORD, USER_NOT_FOUND_MSG, INVALID_CREDENTIAL_MSG
+from app.errors.handlers import error_response
+from app.errors.messages import INCORRECT_PASSWORD, USER_NOT_FOUND_MSG, INVALID_CREDENTIAL_MSG
 from app.models import Users
 from app.utils.permissions import encode_refresh_token, encode_access_token
 from app.utils.spec import docs_path

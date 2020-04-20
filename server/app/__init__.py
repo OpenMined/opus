@@ -63,6 +63,7 @@ def register_extensions(app):
 
 def register_blueprints(app):
     """register all needed flask blueprints with the current app"""
+    app.url_map.strict_slashes = False
     for bp in all_blueprints:
         app.register_blueprint(bp)
 
