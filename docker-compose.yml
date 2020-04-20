@@ -24,18 +24,17 @@ services:
 
   aries-agent:
     image: bcgovimages/aries-cloudagent:py36-1.14-1_0.4.5
-    network_mode: host
     environment:
       - ADMIN_PORT=5001
       - AGENT_PORT=10001
       - SITE_URL=${SITE_URL}
       - AGENT_API_KEY=123
-      - WEBHOOK_URL=http://localhost:5000/webhooks/agent
+      - WEBHOOK_URL=http://server:5000/webhooks/agent
       - AGENT_LABEL=Aries SSI distributor
       - AGENT_WALLET_SEED=opus-agentTvZHDtxD73sFgniZPMexlS
     ports:
-      - '5001:5001'
-      - '10001:10001'
+      - 5001:5001
+      - 10001:10001
     entrypoint: /bin/bash
     command:
        - -c
