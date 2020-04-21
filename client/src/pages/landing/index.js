@@ -10,8 +10,8 @@ import SignupForm from "./SignupForm";
 import LoginForm from "./LoginForm";
 
 export function Landing({ onError }) {
-  const [registrationURL, setRegistrationURL] = useState();
-  const [loginURL, setLoginURL] = useState();
+  const [registrationQR, setRegistrationQR] = useState();
+  const [loginQR, setLoginQR] = useState();
   const signupDisclosure = useDisclosure();
   const loginDisclosure = useDisclosure();
   const signupQRDisclosure = useDisclosure();
@@ -25,7 +25,7 @@ export function Landing({ onError }) {
       apiCall: () => apiClient.register(values),
       onError,
       onSuccess: async (responseData) => {
-        setRegistrationURL("https://web.cloud.streetcred.id/link/?c_i=" + responseData["invite_url"]);
+        setRegistrationQR("https://web.cloud.streetcred.id/link/?c_i=" + responseData["inviteURL"]);
         signupDisclosure.onClose();
         signupQRDisclosure.onOpen();
       },
@@ -43,13 +43,28 @@ export function Landing({ onError }) {
       },
     });
 
-    const generateLoginURL = async () => {
+    const getLoginQRCode = async () => {
       triggerSideEffect({
-        apiCall: () => apiClient.generateLoginURL(),
+        apiCall: () => apiClient.getLoginQRCode(),
         onError,
         onSuccess: async (responseData) => {
-          setLoginURL("https://web.cloud.streetcred.id/link/?c_i=" + responseData["invite_url"]);
+          setLoginQR("https://web.cloud.streetcred.id/link/?c_i=" + responseData["verificationURL"]);
           loginQRDisclosure.onOpen();
+
+          // Second API call to log the user in when the verification is validated.
+          // Need to write a simple non-blocking polling function. 
+          // Gives the user 30 seconds to respond, otherwise it times out.
+          triggerSideEffect({
+            apiCall: () => apiClient.qrLogin({verification_id: responseData["verificationId"]}),
+            onError, //Some retry function here
+            onSuccess: async (responseData) => {
+              console.log('Final response!!!!' + responseData);
+              // This is the necessary login code below. 
+              // TokenManager.setSession(responseData);
+              // loginQRDisclosure.onClose();
+              // history.replace(from);
+            }
+          });
         },
       });
     };
@@ -64,7 +79,7 @@ export function Landing({ onError }) {
           <Button variantColor="blue" onClick={loginDisclosure.onOpen}>
             Login
           </Button>
-          <Button variantColor="blue" onClick={generateLoginURL}>
+          <Button variantColor="blue" onClick={getLoginQRCode}>
             QR Code Login
           </Button>
         </Stack>
@@ -76,10 +91,11 @@ export function Landing({ onError }) {
         <LoginForm onSubmit={login} />
       </Modal>
       <Modal {...signupQRDisclosure} title="Scan Me!">
-          <QRcode size="200" value={registrationURL} style={{margin: "0 auto", padding: "10px"}} />
+          <QRcode size="200" value={registrationQR} style={{margin: "0 auto", padding: "10px"}} />
       </Modal>
       <Modal {...loginQRDisclosure}>
-        <QRcode size="200" value={loginURL} style={{margin: "0 auto", padding: "10px"}} />
+        Scan me!
+        <QRcode size="200" value={loginQR} style={{margin: "0 auto", padding: "10px"}} />
       </Modal>
     </>
   );

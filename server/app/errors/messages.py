@@ -7,6 +7,7 @@ BAD_PERMISSIONS_MSG = 'bad_permissions'
 BAD_REQUEST_MSG = 'bad_request'
 NO_TOKEN_MSG = 'no_token'
 BAD_TOKEN_MSG = 'bad_token'
+BAD_VERIFICATION_MSG = 'bad_verification'
 INCORRECT_PASSWORD = 'password_not_matching'
 USER_NOT_FOUND_MSG = 'user_not_found'
 INVALID_CREDENTIAL_MSG = 'invalid_credentials'
@@ -19,6 +20,10 @@ MESSAGES = {
     },
     BAD_TOKEN_MSG: {
         "message": {MESSAGE_KEY: "Please provide a valid token"},
+        "status_code": UNAUTHORIZED,
+    },
+    BAD_VERIFICATION_MSG: {
+        "message": {MESSAGE_KEY: "That verification ID is not valid."},
         "status_code": UNAUTHORIZED,
     },
     BAD_PERMISSIONS_MSG: {
