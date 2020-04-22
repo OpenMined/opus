@@ -92,9 +92,12 @@ def users_qr_login():
                 'access_token': encode_access_token(email),
                 'refresh_token': encode_refresh_token(email)
             }), SUCCESS
+        elif (verification_id['state'] == 'Requested'):
+            # Pending on user to verify the credential via Streetcred.
+            return jsonify({
+                'state': 'pending'
+            }), SUCCESS
         else:
-            # NOTE: Change this to provide the front end with information that the state is still requested.
-            # This shouldn't be an error code!
             return error_response(BAD_VERIFICATION_MSG)
     else:    
         r = requests.get(SSI_ENDPOINT + '/users/qr_login')

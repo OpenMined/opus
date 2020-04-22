@@ -9,6 +9,8 @@ import { TokenManager } from "../../storage";
 import SignupForm from "./SignupForm";
 import LoginForm from "./LoginForm";
 
+import poll from "./utils.js";
+
 export function Landing({ onError }) {
   const [registrationQR, setRegistrationQR] = useState();
   const [loginQR, setLoginQR] = useState();
@@ -51,20 +53,48 @@ export function Landing({ onError }) {
           setLoginQR("https://web.cloud.streetcred.id/link/?c_i=" + responseData["verificationURL"]);
           loginQRDisclosure.onOpen();
 
-          // Second API call to log the user in when the verification is validated.
-          // Need to write a simple non-blocking polling function. 
-          // Gives the user 30 seconds to respond, otherwise it times out.
           triggerSideEffect({
             apiCall: () => apiClient.qrLogin({verification_id: responseData["verificationId"]}),
-            onError, //Some retry function here
+            onError,
             onSuccess: async (responseData) => {
               console.log('Final response!!!!' + responseData);
               // This is the necessary login code below. 
-              // TokenManager.setSession(responseData);
-              // loginQRDisclosure.onClose();
-              // history.replace(from);
+              TokenManager.setSession(responseData);
+              loginQRDisclosure.onClose();
+              history.replace(from);
             }
           });
+
+          poll(
+            function () {
+              console.log("Hello!")
+            },
+            function (err) {
+              if (err) {
+
+              }
+              else {
+                
+              }
+            },
+          2000, 150);
+
+          // Second API call to log the user in when the verification is validated.
+          // Need to write a simple non-blocking polling function. 
+          // Gives the user 30 seconds to respond, otherwise it times out.
+          // poll(async (responseData) => {
+          //   triggerSideEffect({
+          //     apiCall: () => apiClient.qrLogin({verification_id: responseData["verificationId"]}),
+          //     onError,
+          //     onSuccess: async (responseData) => {
+          //       console.log('Final response!!!!' + responseData);
+          //       // This is the necessary login code below. 
+          //       // TokenManager.setSession(responseData);
+          //       // loginQRDisclosure.onClose();
+          //       // history.replace(from);
+          //     }
+          //   })
+          // }, 2000, 150);
         },
       });
     };

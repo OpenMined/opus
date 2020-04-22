@@ -21,7 +21,7 @@ app.post('/webhook', async function (req, res) {
     try {
         console.log("got webhook" + req + "   type: " + req.body.message_type);
         if (req.body.message_type === 'new_connection') {
-            console.log("new connection notif");
+            console.log("New connection.");
 
             var credentialValues = JSON.parse(cache.get("userRegistrationBody"));
             var params =
