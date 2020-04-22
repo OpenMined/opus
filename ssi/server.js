@@ -1,11 +1,11 @@
-var http = require('http');
-var parser = require('body-parser');
-var cors = require('cors');
-var path = require('path');
-var { createTerminus } = require('@godaddy/terminus');
-var express = require('express');
-var ngrok = require('ngrok');
-var cache = require('./model');
+const http = require('http');
+const parser = require('body-parser');
+const cors = require('cors');
+const { createTerminus } = require('@godaddy/terminus');
+const express = require('express');
+const ngrok = require('ngrok');
+const cache = require('./model');
+// const request = require('request');
 
 require('dotenv').config();
 
@@ -21,7 +21,7 @@ app.post('/webhook', async function (req, res) {
     try {
         console.log("got webhook" + req + "   type: " + req.body.message_type);
         if (req.body.message_type === 'new_connection') {
-                    console.log("new connection notif");
+            console.log("new connection notif");
 
             var credentialValues = JSON.parse(cache.get("userRegistrationBody"));
             var params =
@@ -39,6 +39,9 @@ app.post('/webhook', async function (req, res) {
             console.log(params);
             await client.createCredential(params);
         }
+        else if (req.body.message_type === 'verification') {
+            console.log('New verification: '+ req.body.object_id);
+        }
     }
     catch (e) {
         console.log(e.message || e.toString());
@@ -51,7 +54,7 @@ app.post('/users/register', async function (req, res) {
 
     const invite = await getInvite();
     cache.add("connectionId", invite.connectionId);
-    res.status(200).send({ invite_url: invite.invitation });
+    res.status(200).send({ inviteURL: invite.invitation });
 });
 
 const getInvite = async () => {
@@ -61,6 +64,7 @@ const getInvite = async () => {
         });
         return result;
     } catch (e) {
+        console.log("createConnection: Streetcred API call error!")
         console.log(e.message || e.toString());
     }
 }
@@ -68,19 +72,37 @@ const getInvite = async () => {
 app.get('/users/qr_login', async function (req, res) {
     const verification = await getLoginQRCode();
     cache.add("verificationId", verification.verificationId);
-    cache.add("connectionId", verification.connectionId);
-    res.status(200).send({ verification: verification.verificationRequestUrl });
+    res.status(200).send({
+        verificationId: verification.verificationId, 
+        verificationURL: verification.verificationRequestData 
+    });
 });
 
 const getLoginQRCode = async () => {
     try {
-        var result = await client.createVerification({
-            verificationParameters: {
-                verificationDefinitionId: process.env.VERIFICATION_DEF_ID
-            }
-        });
+        var result = await client.createVerificationFromPolicy(
+            process.env.VERIFICATION_DEF_ID
+        );
         return result;
     } catch (e) {
+        console.log("createVerificationFromPolicy: Streetcred API call error!")
+        console.log(e.message || e.toString());
+    }
+}
+
+app.post('/users/login_verifications', async function (req, res) {
+    const verification = await getVerification(req.body.verification_id);
+    res.status(200).send(verification);
+});
+
+const getVerification = async (verificationId) => {
+    try {
+        var result = await client.getVerification(
+            verificationId
+        );
+        return result;
+    } catch (e) {
+        console.log("getVerification: Streetcred API call error!")
         console.log(e.message || e.toString());
     }
 }
