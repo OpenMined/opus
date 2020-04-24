@@ -53,48 +53,16 @@ export function Landing({ onError }) {
           setLoginQR("https://web.cloud.streetcred.id/link/?c_i=" + responseData["verificationURL"]);
           loginQRDisclosure.onOpen();
 
-          triggerSideEffect({
-            apiCall: () => apiClient.qrLogin({verification_id: responseData["verificationId"]}),
-            onError,
-            onSuccess: async (responseData) => {
-              console.log('Final response!!!!' + responseData);
-              // This is the necessary login code below. 
-              TokenManager.setSession(responseData);
-              loginQRDisclosure.onClose();
-              history.replace(from);
+          let results = await poll(async () => {
+            let newResponseData = await apiClient.qrLogin({verification_id: responseData["verificationId"]});
+            if (newResponseData['data']['state'] === 'Accepted'){
+              return newResponseData
             }
-          });
+          }, 30000, 2000);
 
-          poll(
-            function () {
-              console.log("Hello!")
-            },
-            function (err) {
-              if (err) {
-
-              }
-              else {
-                
-              }
-            },
-          2000, 150);
-
-          // Second API call to log the user in when the verification is validated.
-          // Need to write a simple non-blocking polling function. 
-          // Gives the user 30 seconds to respond, otherwise it times out.
-          // poll(async (responseData) => {
-          //   triggerSideEffect({
-          //     apiCall: () => apiClient.qrLogin({verification_id: responseData["verificationId"]}),
-          //     onError,
-          //     onSuccess: async (responseData) => {
-          //       console.log('Final response!!!!' + responseData);
-          //       // This is the necessary login code below. 
-          //       // TokenManager.setSession(responseData);
-          //       // loginQRDisclosure.onClose();
-          //       // history.replace(from);
-          //     }
-          //   })
-          // }, 2000, 150);
+          TokenManager.setSession(results['data']['tokens']);
+          loginDisclosure.onClose();
+          history.replace(from);
         },
       });
     };

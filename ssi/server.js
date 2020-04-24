@@ -73,7 +73,7 @@ app.get('/users/qr_login', async function (req, res) {
     const verification = await getLoginQRCode();
     cache.add("verificationId", verification.verificationId);
     res.status(200).send({
-        verificationId: verification.verificationId, 
+        verificationId: verification.verificationId,
         verificationURL: verification.verificationRequestData 
     });
 });

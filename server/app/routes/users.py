@@ -81,7 +81,7 @@ def users_qr_login():
         r = requests.post(SSI_ENDPOINT + '/users/login_verifications', json={'verification_id': verification_id})
         verification = r.json()
 
-        if (verification['state'] == 'Accepted') and (verification['isValid'] == True):
+        if (verification['state'] == 'Accepted'):
             email = verification['proof']['email']['value']
             
             user = Users.query.filter_by(email=email).first()
@@ -89,13 +89,16 @@ def users_qr_login():
                 return error_response(USER_NOT_FOUND_MSG)
             
             return jsonify({
-                'access_token': encode_access_token(email),
-                'refresh_token': encode_refresh_token(email)
+                'state': 'Accepted',
+                'tokens': {
+                    'access_token': encode_access_token(email),
+                    'refresh_token': encode_refresh_token(email)
+                }
             }), SUCCESS
-        elif (verification_id['state'] == 'Requested'):
+        elif (verification['state'] == 'Requested'):
             # Pending on user to verify the credential via Streetcred.
             return jsonify({
-                'state': 'pending'
+                'state': 'Pending'
             }), SUCCESS
         else:
             return error_response(BAD_VERIFICATION_MSG)
