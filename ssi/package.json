@@ -12,14 +12,15 @@
   "license": "ISC",
   "dependencies": {
     "@godaddy/terminus": "^4.3.1",
-    "@streetcred.id/service-clients": "^1.1.2818",
+    "@streetcred.id/service-clients": "^1.1.3102",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "http": "0.0.1-security",
-    "ngrok": "^3.2.7"
+    "ngrok": "^3.2.7",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.3"
-  }    
+  }
 }

@@ -2,11 +2,17 @@ version: "3"
 services:
   client:
     container_name: react_client
-    image: openmind/opus-client:latest
-    build: ./client/
-    restart: unless-stopped
+    build:
+      context: ./client/
+      dockerfile: Dockerfile
+    command: npm start
     ports:
-      - 80:80
+      - 3000:3000
+    volumes:
+      - ./client/:/app/
+      - /app/node_modules
+    depends_on:
+      - "server"
   server:
     container_name: flask_server
     image: openmined/opus-server:latest

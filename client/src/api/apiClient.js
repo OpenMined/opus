@@ -9,7 +9,11 @@ class ApiClient extends BaseClient {
     return this.post("/users/login", { body });
   }
 
-  async generateLoginURL() {
+  async qrLogin(body) {
+    return this.post("/users/qr_login", { body });
+  }
+
+  async getLoginQRCode() {
     return this.get("/users/qr_login");
   }
 

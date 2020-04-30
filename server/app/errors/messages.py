@@ -7,10 +7,12 @@ BAD_PERMISSIONS_MSG = 'bad_permissions'
 BAD_REQUEST_MSG = 'bad_request'
 NO_TOKEN_MSG = 'no_token'
 BAD_TOKEN_MSG = 'bad_token'
+BAD_VERIFICATION_MSG = 'bad_verification'
 INCORRECT_PASSWORD = 'password_not_matching'
 USER_NOT_FOUND_MSG = 'user_not_found'
 INVALID_CREDENTIAL_MSG = 'invalid_credentials'
 SERVER_ERROR_MSG = 'server_error'
+ALREADY_REGISTERED = 'already_registered'
 MESSAGES = {
     NO_TOKEN_MSG: {
         "message": {MESSAGE_KEY: "Missing Authorization Header"},
@@ -18,6 +20,10 @@ MESSAGES = {
     },
     BAD_TOKEN_MSG: {
         "message": {MESSAGE_KEY: "Please provide a valid token"},
+        "status_code": UNAUTHORIZED,
+    },
+    BAD_VERIFICATION_MSG: {
+        "message": {MESSAGE_KEY: "That verification ID is not valid."},
         "status_code": UNAUTHORIZED,
     },
     BAD_PERMISSIONS_MSG: {
@@ -43,6 +49,10 @@ MESSAGES = {
     SERVER_ERROR_MSG: {
         "message": {MESSAGE_KEY: "Something went wrong. Please try again later"},
         "status_code": INTERNAL_SERVER_ERROR,
+    },
+    ALREADY_REGISTERED: {
+        "message": {MESSAGE_KEY: "An account has already been registered against that username."},
+        "status_code": BAD_REQUEST,
     }
 }
 
