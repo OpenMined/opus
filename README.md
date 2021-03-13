@@ -15,3 +15,6 @@ This will start both the client/server application, and both will reload automat
 ## Further Documentation
 
 See the Readmes within the `client/` and `server/` directories for more information.
+
+## Support
+For support in using this library, please join the **#lib_opus** Slack channel. If you’d like to follow along with any code changes to the library, please join the **#code_opus** Slack channel. [Click here to join our Slack community!](https://slack.openmined.org)
