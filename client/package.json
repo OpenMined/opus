@@ -19,7 +19,7 @@
     "react-dom": "^16.13.0",
     "react-hook-form": "^5.1.1",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.0",
+    "react-scripts": "3.4.4",
     "xss": "^1.0.6"
   },
   "devDependencies": {
