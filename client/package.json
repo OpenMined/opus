@@ -6,21 +6,24 @@
     "start": "NODE_ENV=local node -r dotenv/config  ./node_modules/.bin/react-scripts start",
     "build": "NODE_ENV=production node -r dotenv/config ./node_modules/.bin/react-scripts build",
     "test": "NODE_ENV=test node -r dotenv/config ./node_modules/.bin/react-scripts test",
-    "eject": "./node_modules/.bin/react-scripts eject"
+    "eject": "./node_modules/.bin/react-scripts eject",
+    "prepare": "npm run snyk-protect",
+    "snyk-protect": "snyk-protect"
   },
   "dependencies": {
     "@chakra-ui/core": "^0.6.1",
     "@emotion/core": "^10.0.28",
     "@emotion/styled": "^10.0.27",
     "emotion-theming": "^10.0.27",
-    "lodash": "^4.17.15",
-    "node-fetch": "^2.6.0",
+    "lodash": "^4.17.21",
+    "node-fetch": "^2.6.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-hook-form": "^5.1.1",
     "react-router-dom": "^5.1.2",
-    "react-scripts": "3.4.0",
-    "xss": "^1.0.6"
+    "react-scripts": "4.0.0",
+    "xss": "^1.0.10",
+    "@snyk/protect": "latest"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^4.2.4",
@@ -58,5 +61,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "snyk": true
 }
